@@ -4,14 +4,8 @@ using UnityEngine;
 
 public class ObjectObstacle : Obstacle
 {
-    float scale = 1;
-    float rotationSpeed = 0;
-    float relativeSpeed = 0;
-
-    private void Start()
-    {
-        transform.localScale *= scale;
-    }
+    [SerializeField] float rotationSpeed = 0;
+    [SerializeField] float relativeSpeed = 0;
 
     private new void FixedUpdate()
     {
@@ -23,8 +17,8 @@ public class ObjectObstacle : Obstacle
     protected void OnTriggerEnter2D(Collider2D collision)
     {
         if (!collision.CompareTag("Player")) return;
-        player.HP -= (int)damage;
-        player.CurrentShift -= (int)shiftDamage;
-
+        player.HP -= (int) damage;
+        player.CurrentShift -= (int) shiftDamage;
+        Destroy(gameObject);
     }
 }

@@ -8,7 +8,7 @@ using System.Reflection;
 using System.IO;
 using System.Linq;
 
-//LevelEditRefactor branch right? 
+//Trying to refactor this shit
 [CustomEditor(typeof(Player))]
 public class ObjectPosition : Editor {
     private void OnSceneGUI()
@@ -21,14 +21,12 @@ public class ObjectPosition : Editor {
 
 public class LevelEditor : EditorWindow
 {
-
     string levelName = "0001";
 
     Level level;
 
-    
-
     public static float x, y = 0;
+    
     float levelSize = 1000;
 
     GameObject prefab = null;
@@ -39,9 +37,9 @@ public class LevelEditor : EditorWindow
 
     LevelElementInfo selectedLevelElement;
 
-    List<bool> saveFields = new List<bool>();
-
     Rect sliderRect;
+
+    SerializedObject so;
 
     public GameObject Prefab
     {
@@ -52,6 +50,10 @@ public class LevelEditor : EditorWindow
             {
                 Debug.Log("Prefab is not a level element");
                 return;
+            }
+            if (selectedLevelElement != null) {
+                selectedLevelElement.PrefabName = value.name;
+                UpdateProperties();
             }
             prefab = value;
         }
@@ -85,21 +87,20 @@ public class LevelEditor : EditorWindow
     void CreateProperties(LevelElement levelElement)
     {
         selectedLevelElement.Properties = new Dictionary<string, object>();
-        saveFields = new List<bool>();
-        foreach (var el in levelElement.GetType().GetRuntimeFields()) {
-            if (el.GetValue(levelElement) == null) continue;
-            selectedLevelElement.Properties.Add(el.Name, el.GetValue(levelElement));
-            saveFields.Add(false);
+        so = new SerializedObject(levelElement);
+        foreach (var el in levelElement.GetType().GetRuntimeFields())
+        {
+            if (so.FindProperty(el.Name) == null && el.GetValue(levelElement) != null)
+                selectedLevelElement.Properties.Add(el.Name, el.GetValue(levelElement));
         }
     }
 
     void UpdateProperties() {
-        saveFields = new List<bool>();
         LevelElement levelElement = Prefab.GetComponent<LevelElement>();
+        so = new SerializedObject(levelElement);
         foreach (var el in levelElement.GetType().GetRuntimeFields())
         {
-            saveFields.Add(false);
-            if (el.GetValue(levelElement) == null || selectedLevelElement.Properties.ContainsKey(el.Name)) continue;
+            if (so.FindProperty(el.Name) != null || el.GetValue(levelElement) == null || selectedLevelElement.Properties.ContainsKey(el.Name)) continue;
             selectedLevelElement.Properties.Add(el.Name, el.GetValue(levelElement));
         }
      }
@@ -109,24 +110,13 @@ public class LevelEditor : EditorWindow
         if (field.Value.GetType() == typeof(long) || field.Value.GetType() == typeof(int)) selectedLevelElement.Properties[field.Key] = EditorGUILayout.LongField(label: field.Key, Convert.ToInt64(selectedLevelElement.Properties[field.Key]), expandDefault);
         if (field.Value.GetType() == typeof(float) || field.Value.GetType() == typeof(double)) selectedLevelElement.Properties[field.Key] = EditorGUILayout.FloatField(label: field.Key, Convert.ToSingle(selectedLevelElement.Properties[field.Key]), expandDefault);
         if (field.Value.GetType() == typeof(string)) selectedLevelElement.Properties[field.Key] = EditorGUILayout.TextField(label: field.Key, (string)selectedLevelElement.Properties[field.Key], expandDefault);
-        
     }
 
-    void ListProperties() {
-        int k = 0;
-        Debug.Log(saveFields.Count);
+    void ListProperties()
+    {
         foreach (var el in selectedLevelElement.Properties.ToList())
-        {
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                saveFields[k] = EditorGUILayout.Toggle(saveFields[k], expandDefault);
-                AddField(el);
-                k++;
-
-            }
-            
-        }
-       
+            AddField(el);
+        
     }
     void SelectElement(LevelElementInfo element) {
         x = element.X;
@@ -144,16 +134,17 @@ public class LevelEditor : EditorWindow
     {
         foreach (var el in level.Elements)
         {
-            GUILayout.BeginHorizontal(expandDefault);
-            if (GUILayout.Button(el.PrefabName + " " + el.Y)) SelectElement(el);
-            //var btnRect = GUILayoutUtility.GetLastRect();
-            //Handles.color = Color.red;
-            //Handles.DrawLine(new Vector2(Mathf.Lerp(btnRect.min.x, btnRect.max.x, (el.X + 3) / 6), btnRect.min.y), new Vector2(Mathf.Lerp(btnRect.min.x, btnRect.max.x, (el.X + 3) / 6), btnRect.max.y), 2);
-            if (GUILayout.Button("Delete", expandDefault)) { 
-                level.Elements.Remove(el);
-                selectedLevelElement = null;
-            };
-            GUILayout.EndHorizontal();
+
+            using (new GUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button(string.Format("{0}: y{1}, x{2}", el.PrefabName ,el.Y, el.X))) SelectElement(el);
+                if (GUILayout.Button("Delete", expandDefault))
+                {
+                    level.Elements.Remove(el);
+                    selectedLevelElement = null;
+                    break;
+                };
+            }
         }
     }
 

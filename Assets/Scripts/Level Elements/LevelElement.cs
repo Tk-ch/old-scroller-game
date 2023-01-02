@@ -6,9 +6,8 @@ using UnityEngine;
 public abstract class LevelElement : MonoBehaviour
 {
        
-    protected Player player; // б≥льш≥сть елемент≥в р≥вню потребуватимуть гравц€
-    [SerializeField]
-    float destroyCoordinate = -10;
+    [SerializeField] protected Player player; // б≥льш≥сть елемент≥в р≥вню потребуватимуть гравц€
+    [SerializeField] float destroyCoordinate = -10;
 
     
 
