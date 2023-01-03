@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -7,8 +6,9 @@ using System;
 using System.Reflection;
 using System.IO;
 using System.Linq;
-
-//Trying to refactor this shit
+/// <summary>
+/// Solely used to show the X position of a Level Element in the Scene view
+/// </summary>
 [CustomEditor(typeof(Player))]
 public class ObjectPosition : Editor {
     private void OnSceneGUI()
@@ -19,6 +19,9 @@ public class ObjectPosition : Editor {
     }
 }
 
+/// <summary>
+/// Huh, a level editor. Makes a window to make some levels
+/// </summary>
 public class LevelEditor : EditorWindow
 {
     string levelName = "0001";
@@ -41,7 +44,7 @@ public class LevelEditor : EditorWindow
 
     SerializedObject so;
 
-    public GameObject Prefab
+    public GameObject Prefab // It just works
     {
         get => prefab; set {
             if (value == prefab) return;
@@ -60,14 +63,14 @@ public class LevelEditor : EditorWindow
     }
 
     [MenuItem("Window/Level Editor")]
-    static void Init() {
+    static void Init() { //Boilerplate
         LevelEditor window = (LevelEditor)GetWindow(typeof(LevelEditor));
         window.titleContent = new GUIContent(text: "Level Editor");
         window.Show();
     }
 
-
-    void LoadLevel() {
+    // Methods that load and save the level, whatever
+    void LoadLevel() { 
         var levelString = (TextAsset)Resources.Load("Levels/" + levelName);
         if (levelString == null) {
             level = new Level();
@@ -83,7 +86,8 @@ public class LevelEditor : EditorWindow
         AssetDatabase.Refresh();
     }
 
-
+    // Generates a dictionary of properties for a given Level Element. 
+    // Serialized fields are skipped and assumed to be filled in the prefab
     void CreateProperties(LevelElement levelElement)
     {
         selectedLevelElement.Properties = new Dictionary<string, object>();
@@ -95,6 +99,8 @@ public class LevelEditor : EditorWindow
         }
     }
 
+    // Updates a dictionary of properties for the current Level Element. 
+    // Serialized fields are skipped and assumed to be filled in the prefab
     void UpdateProperties() {
         LevelElement levelElement = Prefab.GetComponent<LevelElement>();
         so = new SerializedObject(levelElement);
@@ -105,6 +111,8 @@ public class LevelEditor : EditorWindow
         }
      }
 
+
+    // Adds an EditorGUI field to edit a Property
     void AddField(KeyValuePair<string, object> field)
     {
         if (field.Value.GetType() == typeof(long) || field.Value.GetType() == typeof(int)) selectedLevelElement.Properties[field.Key] = EditorGUILayout.LongField(label: field.Key, Convert.ToInt64(selectedLevelElement.Properties[field.Key]), expandDefault);
@@ -112,12 +120,15 @@ public class LevelEditor : EditorWindow
         if (field.Value.GetType() == typeof(string)) selectedLevelElement.Properties[field.Key] = EditorGUILayout.TextField(label: field.Key, (string)selectedLevelElement.Properties[field.Key], expandDefault);
     }
 
+    // Just to list all the property GUI fields
     void ListProperties()
     {
         foreach (var el in selectedLevelElement.Properties.ToList())
             AddField(el);
         
     }
+
+    // Select a level element from loaded Level Elements
     void SelectElement(LevelElementInfo element) {
         x = element.X;
         y = element.Y;
@@ -130,14 +141,13 @@ public class LevelEditor : EditorWindow
         UpdateProperties();
     }
 
+    // List all the elements in the level
     void ListElements()
     {
         foreach (var el in level.Elements)
-        {
-
             using (new GUILayout.HorizontalScope())
             {
-                if (GUILayout.Button(string.Format("{0}: y{1}, x{2}", el.PrefabName ,el.Y, el.X))) SelectElement(el);
+                if (GUILayout.Button(string.Format("{0}: Y({1}), X({2})", el.PrefabName ,el.Y, el.X))) SelectElement(el);
                 if (GUILayout.Button("Delete", expandDefault))
                 {
                     level.Elements.Remove(el);
@@ -145,70 +155,81 @@ public class LevelEditor : EditorWindow
                     break;
                 };
             }
-        }
+        
     }
 
+    /// <summary>
+    /// Draws the editor window with the level elements and their properties
+    /// </summary>
     void OnGUI()
     {
         if (level == null) LoadLevel();
-        level.Elements.Sort();
+        level.Elements.Sort(); // TODO: only sort if a change is detected
 
         GUILayout.Label("Nebuloic Level Editor", EditorStyles.boldLabel);
 
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Level Name: ", expandDefault);
-        levelName = GUILayout.TextField(levelName, GUILayout.Width(100), expandDefault);
-        if (GUILayout.Button("Load", expandDefault)) LoadLevel();
-        GUILayout.EndHorizontal();
+        using (new EditorGUILayout.HorizontalScope()) {
+            GUILayout.Label("Level Name: ", expandDefault);
+            levelName = GUILayout.TextField(levelName, GUILayout.Width(100), expandDefault);
+            if (GUILayout.Button("Load", expandDefault)) LoadLevel();
+        }
+
         levelSize = EditorGUILayout.FloatField("Level Size: ", levelSize, expandDefault);
+        
         y = EditorGUILayout.Slider("Y Coordinate", y, 0, levelSize);
+        
         sliderRect = GUILayoutUtility.GetLastRect();
+
+        
         Vector2 start = sliderRect.min + new Vector2(150, 0);
         Vector2 end = sliderRect.max - new Vector2(55, 0);
-        x = EditorGUILayout.Slider("X Coordinate", x, -3, 3, expandDefault);
-        if (level.Elements.Count > 0)
+        if (level.Elements.Count > 0) // Draw a line on Y coordinate slider to indicate the position of each element
         {
             foreach (var el in level.Elements) {
                 Handles.DrawLine(new Vector2(Mathf.Lerp(start.x, end.x, el.Y/levelSize), start.y), new Vector2(Mathf.Lerp(start.x, end.x, el.Y / levelSize), end.y));
             }
         }
 
-        Prefab = EditorGUILayout.ObjectField("Select Prefab: ", Prefab, typeof(GameObject), false, GUILayout.Width(300), expandDefault) as GameObject;
-        GUILayout.BeginHorizontal();
-        GUILayout.BeginVertical(GUILayout.Width(position.width/2), expandDefault);
-        
-        if (Prefab != null && selectedLevelElement == null)
-        {
-            if (GUILayout.Button("Add", expandDefault))
-            {
-                LevelElement levelElement = Prefab.GetComponent<LevelElement>();
-                selectedLevelElement = new LevelElementInfo
-                {
-                    X = x,
-                    Y = y,
-                    PrefabName = Prefab.name,
-                    Properties = { }
-                };
-                level.Elements.Add(selectedLevelElement);
-                CreateProperties(levelElement);
-            }
-            
-        }
+        x = EditorGUILayout.Slider("X Coordinate", x, -3, 3, expandDefault);
 
-        if (selectedLevelElement != null)
+        Prefab = EditorGUILayout.ObjectField("Select Prefab: ", Prefab, typeof(GameObject), false, GUILayout.Width(300), expandDefault) as GameObject;
+        
+        using (new EditorGUILayout.HorizontalScope())
         {
-            selectedLevelElement.X = x;
-            selectedLevelElement.Y = y;
-            ListProperties();
-            GUILayout.BeginHorizontal(expandDefault);
-            if (GUILayout.Button("Copy", expandDefault)) {
+            using (new EditorGUILayout.VerticalScope(GUILayout.Width(position.width / 2), expandDefault))
+            {
+                if (Prefab != null && selectedLevelElement == null)
+                    CreateAddButton();
+                if (selectedLevelElement != null)
+                    UpdateSelectedLevelElement();
+            }
+
+            scroll = GUILayout.BeginScrollView(scroll, GUILayout.Width(position.width / 2), expandDefault);
+                ListElements();
+            GUILayout.EndScrollView();
+        }
+        if (GUILayout.Button("Save File", expandDefault)) SaveLevel();
+    }
+
+    //Updates all the properties of a selected levelElementInfo
+    private void UpdateSelectedLevelElement()
+    {
+        selectedLevelElement.X = x;
+        selectedLevelElement.Y = y;
+        ListProperties();
+
+        using (new EditorGUILayout.HorizontalScope(expandDefault))
+        {
+            if (GUILayout.Button("Copy", expandDefault))
+            {
                 Dictionary<string, object> temp = new Dictionary<string, object>();
                 foreach (string key in selectedLevelElement.Properties.Keys)
                 {
                     temp.Add(key, selectedLevelElement.Properties[key]);
                 }
 
-                selectedLevelElement = new LevelElementInfo {
+                selectedLevelElement = new LevelElementInfo
+                {
                     X = selectedLevelElement.X,
                     Y = selectedLevelElement.Y,
                     PrefabName = selectedLevelElement.PrefabName,
@@ -217,30 +238,31 @@ public class LevelEditor : EditorWindow
 
                 level.Elements.Add(selectedLevelElement);
             }
-            if (GUILayout.Button("Ok", expandDefault)) {
+            if (GUILayout.Button("Ok", expandDefault))
+            {
                 selectedLevelElement = null;
             }
-            GUILayout.EndHorizontal();
-
         }
-
-
-        GUILayout.EndVertical();
-        //prefab.name is the name of the file
-
-        scroll = GUILayout.BeginScrollView(scroll, GUILayout.Width(position.width/2), expandDefault);
-        ListElements();
-
-        GUILayout.EndScrollView();
-        GUILayout.EndHorizontal();
-
-
-        if (GUILayout.Button("Save File", expandDefault)) SaveLevel();
-        
-
-        
-
     }
 
-   
+    /// <summary>
+    /// Just a function to create a new level element
+    /// </summary>
+    private void CreateAddButton()
+    {
+        if (GUILayout.Button("Add", expandDefault))
+        {
+            LevelElement levelElement = Prefab.GetComponent<LevelElement>();
+            selectedLevelElement = new LevelElementInfo
+            {
+                X = x,
+                Y = y,
+                PrefabName = Prefab.name,
+                Properties = { }
+            };
+            level.Elements.Add(selectedLevelElement);
+            CreateProperties(levelElement);
+        }
+    }
+
 }

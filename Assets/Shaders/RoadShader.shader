@@ -1,5 +1,7 @@
 Shader "Unlit/Roadshader"
 {
+    // A mirrored gradient for the road
+
     Properties
     {
         _RoadColor ("Road Color", Color) = (0,0,0,0)

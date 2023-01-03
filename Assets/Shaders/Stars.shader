@@ -1,5 +1,7 @@
 Shader "Unlit/Stars"
 {
+    // shader that is used to generate the stars texture
+    
     Properties
     {
         _Percentage ("Percentage", Float) = 0
@@ -52,11 +54,12 @@ Shader "Unlit/Stars"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float noise = random(i.uv);
+                float noise = random(i.uv); // getting some noise to output in the G channel
 
-                float stars = GetStars(i.uv) + GetStars(i.uv + 0.5) + GetStars(i.uv + 0.3) + GetStars(i.uv + 0.7);
+                float stars = GetStars(i.uv) + GetStars(i.uv + 0.5) + GetStars(i.uv + 0.3) + GetStars(i.uv + 0.7); // adding some more stars to avoid spirals in texture
 
-                fixed4 col = fixed4((stars - random(i.uv) * _BrightnessRange), noise, 0, 1);
+                // the performance does not matter since we are only doing this once during loading
+                fixed4 col = fixed4((stars - random(i.uv) * _BrightnessRange), noise, 0, 1); // stars go to red channel and the original noise (for color and twinkling) goes to green
                 return col;
             }
             ENDCG

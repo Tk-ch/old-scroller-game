@@ -1,10 +1,12 @@
 Shader "Unlit/Exhaust"
 {
+
+    // Just a shader that interpolates between two colors vertically depending on the T value
+
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
         _Color ("Color", Color) = (1,1,1,1)
-        
         _tValue ("T", float) = 0
     }  
     SubShader
@@ -46,7 +48,6 @@ Shader "Unlit/Exhaust"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                
                 return (i.uv.y) <  _tValue ? clamp(_Color * 2, 0, 1) : _Color;
             }
             ENDCG

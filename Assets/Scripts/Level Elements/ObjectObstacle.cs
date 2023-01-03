@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// A class for obstacles that are relatively small objects on screen
+// Such as meteors, asteroids, comets, etc.
 public class ObjectObstacle : Obstacle
 {
     [SerializeField] float rotationSpeed = 0;

@@ -9,6 +9,9 @@ public class TextureGenerator : MonoBehaviour
     [SerializeField]
     Material material;
 
+    /// <summary>
+    /// Generates a Render texture from a shader; for now it is needed to cache the procedural noise into memory without using image textures
+    /// </summary>
     void OnEnable()
     {
         if (Screen.width <= 0) return;
@@ -16,7 +19,7 @@ public class TextureGenerator : MonoBehaviour
         renderTexture.graphicsFormat = UnityEngine.Experimental.Rendering.GraphicsFormat.R8G8_UNorm;
         renderTexture.filterMode = FilterMode.Point;
         Graphics.Blit(null, renderTexture, material);
-        GetComponent<Renderer>().sharedMaterial.mainTexture = renderTexture;
+        GetComponent<Renderer>().sharedMaterial.mainTexture = renderTexture; //TODO: Use MaterialPropertyBlock instead of sharedMaterial; works fine for now though
     }
 
 }
