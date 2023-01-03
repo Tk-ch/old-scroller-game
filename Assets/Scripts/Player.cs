@@ -112,6 +112,7 @@ public class Player : MonoBehaviour
         }
         HP = sum;
         currentSpeed = minimumSpeed;
+        CurrentShift = 0;
     }
 
     

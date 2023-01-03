@@ -71,6 +71,9 @@ public class UIHandler : MonoBehaviour
                 HPs[i].GetComponent<Image>().color = Color.black;
                 HPs[i].transform.SetSiblingIndex(0);
 
+            } else
+            {
+                HPs[i].GetComponent<Image>().color = Color.green;
             }
         }
     }

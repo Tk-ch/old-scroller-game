@@ -32,6 +32,9 @@ public class LevelEditor : EditorWindow
     
     float levelSize = 1000;
 
+    float SnapY = 1f;
+    float SnapX = 1f;
+
     GameObject prefab = null;
 
     Vector2 scroll = new Vector2();
@@ -56,9 +59,10 @@ public class LevelEditor : EditorWindow
             }
             if (selectedLevelElement != null) {
                 selectedLevelElement.PrefabName = value.name;
-                UpdateProperties();
             }
             prefab = value;
+
+            UpdateProperties();
         }
     }
 
@@ -138,7 +142,6 @@ public class LevelEditor : EditorWindow
             GUI.FocusControl(null);
             Prefab = Resources.Load("Prefabs/" + element.PrefabName, typeof(GameObject)) as GameObject;
         }
-        UpdateProperties();
     }
 
     // List all the elements in the level
@@ -168,7 +171,8 @@ public class LevelEditor : EditorWindow
 
         GUILayout.Label("Nebuloic Level Editor", EditorStyles.boldLabel);
 
-        using (new EditorGUILayout.HorizontalScope()) {
+        using (new EditorGUILayout.HorizontalScope())
+        {
             GUILayout.Label("Level Name: ", expandDefault);
             levelName = GUILayout.TextField(levelName, GUILayout.Width(100), expandDefault);
             if (GUILayout.Button("Load", expandDefault)) LoadLevel();
@@ -176,24 +180,37 @@ public class LevelEditor : EditorWindow
 
         levelSize = EditorGUILayout.FloatField("Level Size: ", levelSize, expandDefault);
         
-        y = EditorGUILayout.Slider("Y Coordinate", y, 0, levelSize);
-        
+        SnapY = SnapControls("SNAP Y", SnapY);
+        SnapX = SnapControls("SNAP X", SnapX);
+
+        y = SnapY <= 0 ? EditorGUILayout.Slider("Y Coordinate", y, 0, levelSize) : Mathf.Round(EditorGUILayout.Slider("Y Coordinate", y, 0, levelSize) / SnapY) * SnapY;
+
         sliderRect = GUILayoutUtility.GetLastRect();
 
-        
+
         Vector2 start = sliderRect.min + new Vector2(150, 0);
         Vector2 end = sliderRect.max - new Vector2(55, 0);
-        if (level.Elements.Count > 0) // Draw a line on Y coordinate slider to indicate the position of each element
+        if (level.Elements.Count > 0)
         {
-            foreach (var el in level.Elements) {
-                Handles.DrawLine(new Vector2(Mathf.Lerp(start.x, end.x, el.Y/levelSize), start.y), new Vector2(Mathf.Lerp(start.x, end.x, el.Y / levelSize), end.y));
+            foreach (var el in level.Elements)
+            {
+                if (el.Properties.TryGetValue("length", out object v)) // if the element is a field, draw a rect
+                {
+                    float length = Convert.ToSingle(v) * (end.x - start.x) / levelSize;
+                    Handles.DrawSolidRectangleWithOutline(new Rect(new Vector2(Mathf.Max(Mathf.Lerp(start.x, end.x, el.Y / levelSize) - (length / 2f), 0), start.y), new Vector2(length, end.y - start.y)), new Color(1, 1, 1, 0.3f), Color.black);
+                }
+                else // Draw a line on Y coordinate slider to indicate the position of each element
+                {
+                    Handles.color = Color.white;
+                    Handles.DrawLine(new Vector2(Mathf.Lerp(start.x, end.x, el.Y / levelSize), start.y), new Vector2(Mathf.Lerp(start.x, end.x, el.Y / levelSize), end.y));
+                }
             }
         }
 
-        x = EditorGUILayout.Slider("X Coordinate", x, -3, 3, expandDefault);
+        x = SnapX <= 0 ? EditorGUILayout.Slider("X Coordinate", x, -3, 3, expandDefault) : Mathf.Round(EditorGUILayout.Slider("X Coordinate", x, -3, 3, expandDefault) / SnapX) * SnapX;
 
         Prefab = EditorGUILayout.ObjectField("Select Prefab: ", Prefab, typeof(GameObject), false, GUILayout.Width(300), expandDefault) as GameObject;
-        
+
         using (new EditorGUILayout.HorizontalScope())
         {
             using (new EditorGUILayout.VerticalScope(GUILayout.Width(position.width / 2), expandDefault))
@@ -205,10 +222,35 @@ public class LevelEditor : EditorWindow
             }
 
             scroll = GUILayout.BeginScrollView(scroll, GUILayout.Width(position.width / 2), expandDefault);
-                ListElements();
+            ListElements();
             GUILayout.EndScrollView();
         }
         if (GUILayout.Button("Save File", expandDefault)) SaveLevel();
+    }
+
+    private float SnapControls(string label, float value)
+    {
+        using (new EditorGUILayout.HorizontalScope(expandDefault))
+        {
+            value = EditorGUILayout.FloatField(label, value, expandDefault);
+            if (GUILayout.Button("NO", expandDefault)) {
+                value = -1;
+            }
+            if (GUILayout.Button("0.25", expandDefault))
+            {
+                value = 0.25f;
+            }
+            if (GUILayout.Button("1.0", expandDefault)) {
+                value = 1;
+            }
+            if (GUILayout.Button("2.5", expandDefault)) {
+                value = 2.5f;
+            }
+            if (GUILayout.Button("5", expandDefault)) {
+                value = 5;
+            }
+        }
+        return value;
     }
 
     //Updates all the properties of a selected levelElementInfo
