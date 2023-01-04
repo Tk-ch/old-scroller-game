@@ -13,6 +13,7 @@ Shader "Unlit/BGScroll"
 
         _Intensity ("Intensity", Float) = 2 // resulting color is multiplied by these two before returning
         _Color ("Color", Color) = (1,1,1,1 )
+        _BGColor ("Background color", Color) = (0,0,0,0)
 
     }
     SubShader
@@ -47,6 +48,7 @@ Shader "Unlit/BGScroll"
             float _NoiseOffset;
             float _Intensity;
             fixed4 _Color;
+            fixed4 _BGColor;
 
             v2f vert (MeshData v)
             {
@@ -69,7 +71,7 @@ Shader "Unlit/BGScroll"
                 fixed tex = tex2D(_MainTex, frac(i.uv * 0.5 + float2(0, _Y))).r * clamp(1 - (noiseL.rrr - _NoiseOffset) * 4, 0, 1); 
                 tex += tex2D(_MainTex, frac((i.uv * 0.5) + float2(0, _Y/4)) + float2(0.5, 0)).r / 2 * clamp(pow(noiseL, 2) - _NoiseOffset, 0, 1);
                 tex += tex2D(_MainTex, frac((i.uv * 0.5) + float2(0, _Y/8))+ float2(0.5, 0)).r / 4 * clamp(pow(noiseL, 3) - _NoiseOffset, 0, 1);
-                fixed4 col = fixed4(tex.rrr * lerp(1, starColor, 0.7) * _Intensity * _Color, 1);
+                fixed4 col = fixed4(_BGColor + (tex.rrr * lerp(1, starColor, 0.7) * _Intensity * _Color), 1);
                 return col;
             }
             ENDCG

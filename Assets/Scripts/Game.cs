@@ -35,7 +35,8 @@ public class Game : MonoBehaviour
     /// <param name="el">The element to instantiate</param>
     void InstantiateElement(LevelElementInfo el) {
         GameObject prefab = Instantiate(Resources.Load("Prefabs/" + el.PrefabName, typeof(GameObject)), obstacleParent, true) as GameObject;
-        prefab.transform.position = new Vector2(el.X, obstacleParent.position.y);
+        float yOffset = el.Properties.TryGetValue("length", out object v) ? Convert.ToSingle(v) : 0;
+        prefab.transform.position = new Vector3(el.X, obstacleParent.position.y + yOffset, obstacleParent.position.z);
         el.Properties.Add("player", player);
         prefab.GetComponent<LevelElement>().Init(el.Properties);
     }
@@ -69,7 +70,7 @@ public class Game : MonoBehaviour
     private void Update()
     {
         // Just an update to the background
-        background.GetComponent<Renderer>().material.SetFloat("_Y", levelPosition / Screen.height * 10);
+        background.GetComponent<Renderer>().material.SetFloat("_Y", levelPosition / Screen.height * 15);
     }
 
 }

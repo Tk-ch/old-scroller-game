@@ -137,7 +137,7 @@ public class LevelEditor : EditorWindow
         x = element.X;
         y = element.Y;
         selectedLevelElement = element;
-        if (element.PrefabName != Prefab.name)
+        if (Prefab == null || element.PrefabName != Prefab.name)
         {
             GUI.FocusControl(null);
             Prefab = Resources.Load("Prefabs/" + element.PrefabName, typeof(GameObject)) as GameObject;

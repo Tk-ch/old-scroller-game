@@ -178,7 +178,7 @@ public class Player : MonoBehaviour
 
 
         float speedDifference = CorrectShift > 0 ? cumulativeShiftSpeeds[CorrectShift - 1] : minimumSpeed;
-        thruster.material.SetFloat("_tValue", Mathf.Lerp(thruster.material.GetFloat("_tValue"), (CurrentSpeed - speedDifference) / (cumulativeShiftSpeeds[CurrentShift] - speedDifference), 0.5f));        
+        thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Lerp(thruster.material.GetFloat("_tValue"), (CurrentSpeed - speedDifference) / (cumulativeShiftSpeeds[CurrentShift] - speedDifference), 0.5f), 2));        
         
 
     }
