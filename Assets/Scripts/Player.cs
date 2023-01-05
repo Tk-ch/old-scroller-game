@@ -53,7 +53,7 @@ public class Player : MonoBehaviour
     public int CurrentShift { get => currentShift; set {
             currentShift = Mathf.Clamp(value, 0, MaxShift);
             ShiftChangeEvent.Invoke();
-            thruster.material.SetColor("_Color", shiftColors[currentShift]);
+
         } }
 
 
@@ -99,12 +99,10 @@ public class Player : MonoBehaviour
     [SerializeField] float horizontalRollLimits = 1.5f; //ліміти дороги під час бочки
     [SerializeField] float rollDurationInSeconds = 1; //тривалість бочки
 
-    bool isRolling = false; //статус бочки
+    public bool isRolling = false; //статус бочки
 
-    [Space(20)] 
-    [SerializeField] SpriteRenderer thruster;
-    [SerializeField] GameObject deceleration;
-    [SerializeField] float decelerationShowTimeInSeconds;
+    [SerializeField] SimpleAnimator myAnimator; 
+
 
     void Start()
     {
@@ -120,29 +118,17 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(int hpDamage, int shiftDamage) {
         HP -= hpDamage;
-        if (CurrentShift > 0 && shiftDamage > 0) ShowDeceleration();
+        if (CurrentShift > 0 && shiftDamage > 0) myAnimator.ShowDeceleration();
         CurrentShift -= shiftDamage;
     } 
 
     void Update()
     {
         GetInputs();
-        if (isRolling) {
-            transform.Rotate(0, 360 * Time.deltaTime, 0);
-        }
-    }
-
-    void ShowDeceleration() {
-         
-            deceleration.SetActive(true);
-            StartCoroutine(HideDeceleration());
         
     }
 
-    IEnumerator HideDeceleration() {
-        yield return new WaitForSeconds(decelerationShowTimeInSeconds);
-        deceleration.SetActive(false);
-    }
+    
 
     /// <summary>
     /// Gets all the needed inputs from the Input class and updates the variables
@@ -201,8 +187,7 @@ public class Player : MonoBehaviour
 
 
         float speedDifference = CorrectShift > 0 ? cumulativeShiftSpeeds[CorrectShift - 1] : minimumSpeed;
-        thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Lerp(thruster.material.GetFloat("_tValue"), (CurrentSpeed - speedDifference) / (cumulativeShiftSpeeds[CurrentShift] - speedDifference), 0.5f), 2));        
-        
+        myAnimator.tValue = (CurrentSpeed - speedDifference) / (cumulativeShiftSpeeds[CurrentShift] - speedDifference);
 
     }
 }
