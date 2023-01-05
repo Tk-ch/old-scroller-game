@@ -10,14 +10,14 @@ using UnityEngine;
 public abstract class LevelElement : MonoBehaviour
 {
        
-    [SerializeField] protected Player player; // б≥льш≥сть елемент≥в р≥вню потребуватимуть гравц€
+    [SerializeField] protected Game game; // б≥льш≥сть елемент≥в р≥вню потребуватимуть гравц€
     [SerializeField] float destroyCoordinate = -10;
 
     
     // Most level elements move downward with the speed of the player, so this method does this
     protected void FixedUpdate()
     {
-        transform.Translate(new Vector2(0, -player.CurrentSpeed * Time.fixedDeltaTime), Space.World);
+        transform.Translate(new Vector2(0, -game.player.CurrentSpeed * Time.fixedDeltaTime), Space.World);
 
         if (transform.position.y < destroyCoordinate) Destroy(gameObject);
     }

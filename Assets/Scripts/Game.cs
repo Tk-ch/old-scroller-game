@@ -11,7 +11,7 @@ using System;
 public class Game : MonoBehaviour
 {
     // Player field 
-    [SerializeField] Player player;
+    public Player player;
 
     // The background of the scene
     [SerializeField] GameObject background;
@@ -21,6 +21,8 @@ public class Game : MonoBehaviour
 
     // Transform that is used when instantiating prefabs
     [SerializeField] Transform obstacleParent;
+
+    public UIHandler UIhandler;
 
     // Current level position
     float levelPosition;
@@ -37,7 +39,7 @@ public class Game : MonoBehaviour
         GameObject prefab = Instantiate(Resources.Load("Prefabs/" + el.PrefabName, typeof(GameObject)), obstacleParent, true) as GameObject;
         float yOffset = el.Properties.TryGetValue("length", out object v) ? Convert.ToSingle(v) : 0;
         prefab.transform.position = new Vector3(el.X, obstacleParent.position.y + yOffset, obstacleParent.position.z);
-        el.Properties.Add("player", player);
+        el.Properties.Add("game", this);
         prefab.GetComponent<LevelElement>().Init(el.Properties);
     }
 
