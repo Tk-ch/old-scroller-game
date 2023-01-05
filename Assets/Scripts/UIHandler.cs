@@ -28,6 +28,8 @@ public class UIHandler : MonoBehaviour
     [SerializeField] GameObject warningPanel;
     Coroutine resetWarning;
 
+    [SerializeField] Image accel;
+
     /// <summary>
     /// Sets the warningPanel to a shift color when non-newtonian cloud appears or whatever
     /// </summary>
@@ -110,7 +112,14 @@ public class UIHandler : MonoBehaviour
     void Update()
     {
         //Some debug text values
-        playerSpeed.text = string.Format("Speed: {0}/{5}\nShift: {1}\nCorrect Shift:{2}\nHP: {3}\nAccel: {4}", player.CurrentSpeed, player.CurrentShift, player.CorrectShift, player.HP, player.Acceleration, player.MaxSpeed);    
+        playerSpeed.text = string.Format("Speed: {0}/{5}\nShift: {1}\nCorrect Shift:{2}\nHP: {3}\nAccel: {4}", player.CurrentSpeed, player.CurrentShift, player.CorrectShift, player.HP, player.Acceleration, player.MaxSpeed);
+        UpdateAcceleration();
+        
+    
     }
 
+    void UpdateAcceleration() {
+        accel.fillAmount = Mathf.Sqrt(Mathf.InverseLerp(player.accelerationModifier / player.shiftNumber, player.accelerationModifier, player.Acceleration) + 0.1f);
+    }
+ 
 }

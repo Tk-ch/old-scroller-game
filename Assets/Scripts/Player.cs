@@ -43,7 +43,7 @@ public class Player : MonoBehaviour
 
     [SerializeField] float minimumSpeed; //мінімальна вертикальна швидкість
 
-    [SerializeField] int shiftNumber = 1;
+    [SerializeField] public int shiftNumber = 1;
 
     int currentShift = 0;
 
@@ -79,7 +79,7 @@ public class Player : MonoBehaviour
     // Returns the maximum speed of the current shift
     public float MaxSpeed { get { return cumulativeShiftSpeeds[CurrentShift]; } }
 
-    [SerializeField] [Range(0,10)] float accelerationModifier;
+    [SerializeField] [Range(0,10)] public float accelerationModifier;
 
     // Calculates acceleration depending on the modifier and the difference between the current shift and the correct one
     public float Acceleration { get { return (CurrentShift == CorrectShift) ? accelerationModifier : accelerationModifier / (1 + Mathf.Abs(CurrentShift - CorrectShift)); } }
@@ -118,9 +118,10 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(int hpDamage, int shiftDamage) {
         HP -= hpDamage;
+        if (hpDamage > 0)myAnimator.ShakeCamera();
         if (CurrentShift > 0 && shiftDamage > 0) myAnimator.ShowDeceleration();
         CurrentShift -= shiftDamage;
-    } 
+        } 
 
     void Update()
     {
