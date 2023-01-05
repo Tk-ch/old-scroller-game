@@ -101,7 +101,10 @@ public class Player : MonoBehaviour
 
     bool isRolling = false; //статус бочки
 
-    [Space(20)] [SerializeField] SpriteRenderer thruster;
+    [Space(20)] 
+    [SerializeField] SpriteRenderer thruster;
+    [SerializeField] GameObject deceleration;
+    [SerializeField] float decelerationShowTimeInSeconds;
 
     void Start()
     {
@@ -115,11 +118,30 @@ public class Player : MonoBehaviour
         CurrentShift = 0;
     }
 
-    
+    public void TakeDamage(int hpDamage, int shiftDamage) {
+        HP -= hpDamage;
+        if (CurrentShift > 0 && shiftDamage > 0) ShowDeceleration();
+        CurrentShift -= shiftDamage;
+    } 
 
     void Update()
     {
         GetInputs();
+        if (isRolling) {
+            transform.Rotate(0, 360 * Time.deltaTime, 0);
+        }
+    }
+
+    void ShowDeceleration() {
+         
+            deceleration.SetActive(true);
+            StartCoroutine(HideDeceleration());
+        
+    }
+
+    IEnumerator HideDeceleration() {
+        yield return new WaitForSeconds(decelerationShowTimeInSeconds);
+        deceleration.SetActive(false);
     }
 
     /// <summary>
@@ -150,6 +172,7 @@ public class Player : MonoBehaviour
     IEnumerator ResetRoll() {
         yield return new WaitForSeconds(rollDurationInSeconds);
         isRolling = false;
+        transform.rotation = Quaternion.identity;
     }
 
 

@@ -19,8 +19,7 @@ public class ObjectObstacle : Obstacle
     protected void OnTriggerEnter2D(Collider2D collision)
     {
         if (!collision.CompareTag("Player")) return;
-        game.player.HP -= (int) damage;
-        game.player.CurrentShift -= (int) shiftDamage;
+        game.player.TakeDamage((int)damage, (int)shiftDamage);
         Destroy(gameObject);
     }
 }

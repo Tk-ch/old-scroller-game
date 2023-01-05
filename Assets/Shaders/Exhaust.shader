@@ -17,6 +17,7 @@ Shader "Unlit/Exhaust"
         {
             Blend One One
             ZWrite Off
+            Cull Off
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
