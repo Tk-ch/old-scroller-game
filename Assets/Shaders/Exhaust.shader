@@ -1,7 +1,7 @@
 Shader "Unlit/Exhaust"
 {
 
-    // Just a shader that interpolates between two colors vertically depending on the T value
+    // Just a shader that interpolates the thrust using a gradient map texture
 
     Properties
     {
@@ -15,6 +15,8 @@ Shader "Unlit/Exhaust"
 
         Pass
         {
+            Blend One One
+            ZWrite Off
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -33,7 +35,7 @@ Shader "Unlit/Exhaust"
                 float4 vertex : SV_POSITION;
             };
 
-            //sampler2D _MainTex;
+            sampler2D _MainTex;
             //float4 _MainTex_ST;
             fixed4 _Color;
             fixed _tValue;
@@ -48,7 +50,8 @@ Shader "Unlit/Exhaust"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                return (i.uv.y) <  _tValue ? clamp(_Color * 2, 0, 1) : _Color;
+                fixed tex =tex2D(_MainTex, i.uv); 
+                return tex > (1 - _tValue) ? clamp(tex * _Color * 2, 0, 1) : pow(tex,1.5)* _Color * 2 * _tValue;
             }
             ENDCG
         }

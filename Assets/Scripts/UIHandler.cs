@@ -25,6 +25,24 @@ public class UIHandler : MonoBehaviour
     List<GameObject> shifts = new List<GameObject>();
     List<GameObject> HPs = new List<GameObject>();
 
+    [SerializeField] GameObject warningPanel;
+
+
+    /// <summary>
+    /// Sets the warningPanel to a shift color when non-newtonian cloud appears or whatever
+    /// </summary>
+    /// <param name="color">The color to set :) </param>
+    /// <param name="durationInSeconds">Duration before it is reset to white</param>
+    public void SetWarning(Color color, float durationInSeconds) {
+        warningPanel.GetComponent<Image>().color = color;
+        StartCoroutine(ResetWarning(durationInSeconds));
+    }
+
+    IEnumerator ResetWarning(float duration) {
+        yield return new WaitForSeconds(duration);
+        warningPanel.GetComponent<Image>().color = Color.white;
+    }
+
     private void Start()
     {
         player.HPChangeEvent += OnHPChanged;
@@ -85,7 +103,7 @@ public class UIHandler : MonoBehaviour
         {
             shifts[i].GetComponent<Image>().color = player.shiftColors[i];
         }
-        shifts[player.CurrentShift].GetComponent<Image>().color = Color.white;
+        shifts[player.CurrentShift].GetComponent<Image>().color = player.shiftColors[player.CurrentShift] * 2;
     }
 
     void Update()
