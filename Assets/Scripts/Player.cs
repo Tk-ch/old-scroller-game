@@ -101,7 +101,15 @@ public class Player : MonoBehaviour
 
     public bool isRolling = false; //статус бочки
 
-    [SerializeField] SimpleAnimator myAnimator; 
+    [SerializeField] SimpleAnimator myAnimator;
+
+    public float speedTValue {
+        get
+        {
+            float speedDifference = CorrectShift > 0 ? cumulativeShiftSpeeds[CorrectShift - 1] : minimumSpeed;
+            return (CurrentSpeed - speedDifference) / (cumulativeShiftSpeeds[CurrentShift] - speedDifference);
+        }
+    }
 
 
     void Start()
@@ -126,7 +134,6 @@ public class Player : MonoBehaviour
     void Update()
     {
         GetInputs();
-        
     }
 
     
@@ -186,9 +193,6 @@ public class Player : MonoBehaviour
         CurrentSpeed += Acceleration * Time.fixedDeltaTime;
 
 
-
-        float speedDifference = CorrectShift > 0 ? cumulativeShiftSpeeds[CorrectShift - 1] : minimumSpeed;
-        myAnimator.tValue = (CurrentSpeed - speedDifference) / (cumulativeShiftSpeeds[CurrentShift] - speedDifference);
 
     }
 }

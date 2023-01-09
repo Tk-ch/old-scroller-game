@@ -8,7 +8,6 @@ public class SimpleAnimator : MonoBehaviour
     [SerializeField] Player player;
     [SerializeField] SpriteRenderer thruster;
     [SerializeField] Camera mainCamera;
-    public float tValue;
 
     private void Start()
     {
@@ -42,7 +41,7 @@ public class SimpleAnimator : MonoBehaviour
         {
             transform.Rotate(0, 360 * Time.deltaTime, 0);
         }
-        thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Lerp(thruster.material.GetFloat("_tValue"), tValue, 0.5f), 2));
+        thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Lerp(thruster.material.GetFloat("_tValue"), player.speedTValue, 0.5f), 2));
         mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, new Vector3(0,0,-10), 0.1f);
     }
 }

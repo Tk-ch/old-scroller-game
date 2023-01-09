@@ -29,6 +29,7 @@ public class UIHandler : MonoBehaviour
     Coroutine resetWarning;
 
     [SerializeField] Image accel;
+    [SerializeField] Image speed;
 
     /// <summary>
     /// Sets the warningPanel to a shift color when non-newtonian cloud appears or whatever
@@ -43,7 +44,7 @@ public class UIHandler : MonoBehaviour
 
     IEnumerator ResetWarning(float duration) {
         yield return new WaitForSeconds(duration);
-        warningPanel.GetComponent<Image>().color = Color.gray;
+        warningPanel.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
     }
 
     private void Start()
@@ -107,15 +108,21 @@ public class UIHandler : MonoBehaviour
             shifts[i].GetComponent<Image>().color = player.shiftColors[i];
         }
         shifts[player.CurrentShift].GetComponent<Image>().color = player.shiftColors[player.CurrentShift] * 2;
+        speed.color = player.shiftColors[player.CurrentShift] * 2;
     }
 
     void Update()
     {
         //Some debug text values
-        playerSpeed.text = string.Format("Speed: {0}/{5}\nShift: {1}\nCorrect Shift:{2}\nHP: {3}\nAccel: {4}", player.CurrentSpeed, player.CurrentShift, player.CorrectShift, player.HP, player.Acceleration, player.MaxSpeed);
+        //playerSpeed.text = string.Format("Speed: {0}/{5}\nShift: {1}\nCorrect Shift:{2}\nHP: {3}\nAccel: {4}", player.CurrentSpeed, player.CurrentShift, player.CorrectShift, player.HP, player.Acceleration, player.MaxSpeed);
         UpdateAcceleration();
-        
+        UpdateSpeed();
     
+    }
+
+    void UpdateSpeed() {
+        speed.fillAmount = player.speedTValue;
+
     }
 
     void UpdateAcceleration() {
