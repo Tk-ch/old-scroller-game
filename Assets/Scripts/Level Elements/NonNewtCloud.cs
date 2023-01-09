@@ -22,6 +22,7 @@ public class NonNewtCloud : FieldObstacle
 
     private void OnTriggerStay2D(Collider2D collision)
     {
+        if (!collision.CompareTag("Player")) return;
         if (game.player.CurrentShift > shift) {
             game.player.TakeDamage((int) damage, (int) shiftDamage);
         }

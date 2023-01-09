@@ -103,6 +103,8 @@ public class Player : MonoBehaviour
 
     [SerializeField] SimpleAnimator myAnimator;
 
+    [SerializeField] GameObject bullet;
+
     public float speedTValue {
         get
         {
@@ -126,10 +128,11 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(int hpDamage, int shiftDamage) {
         HP -= hpDamage;
-        if (hpDamage > 0)myAnimator.ShakeCamera();
+        if (hpDamage > 0) myAnimator.ShakeCamera();
         if (CurrentShift > 0 && shiftDamage > 0) myAnimator.ShowDeceleration();
         CurrentShift -= shiftDamage;
-        } 
+        
+     } 
 
     void Update()
     {
@@ -151,13 +154,26 @@ public class Player : MonoBehaviour
         }
         if (Input.GetButtonDown("ShiftDown"))
         {
-            CurrentShift -= 1;
-            CurrentSpeed = Mathf.Min(CurrentSpeed, MaxSpeed);
+            CurrentSpeed -= bullet.GetComponent<Projectile>().speedReduction;
+
+            float speed = CurrentShift > 0 ? cumulativeShiftSpeeds[CurrentShift - 1] : minimumSpeed;
+
+            if (CurrentSpeed < speed) CurrentShift -= 1; 
+            //CurrentSpeed = Mathf.Min(CurrentSpeed, MaxSpeed);
+            Shoot();
         }
         if (Input.GetButtonDown("ShiftUp"))
-        {
             CurrentShift += 1;
-        }
+        
+
+        //if (Input.GetButtonDown("Fire")) 
+        //   Shoot();
+        
+    }
+
+    void Shoot() {
+        var b = Instantiate(bullet, transform.position, Quaternion.identity);
+        b.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 0.1f);
     }
 
     /// <summary>

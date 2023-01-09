@@ -8,6 +8,17 @@ public class ObjectObstacle : Obstacle
 {
     [SerializeField] float rotationSpeed = 0;
     [SerializeField] float relativeSpeed = 0;
+    [SerializeField] float obstacleHP = 1;
+
+    public float ObstacleHP
+    { 
+        get => obstacleHP; 
+        set 
+        {
+            if (value <= 0) Destroy(gameObject);
+            obstacleHP = value;
+        } 
+    }
 
     private new void FixedUpdate()
     {

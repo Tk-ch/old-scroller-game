@@ -31,6 +31,11 @@ public class UIHandler : MonoBehaviour
     [SerializeField] Image accel;
     [SerializeField] Image speed;
 
+    [SerializeField] GameObject endPanel;
+    [SerializeField] Text endText;
+
+    public float time;
+
     /// <summary>
     /// Sets the warningPanel to a shift color when non-newtonian cloud appears or whatever
     /// </summary>
@@ -114,10 +119,10 @@ public class UIHandler : MonoBehaviour
     void Update()
     {
         //Some debug text values
-        //playerSpeed.text = string.Format("Speed: {0}/{5}\nShift: {1}\nCorrect Shift:{2}\nHP: {3}\nAccel: {4}", player.CurrentSpeed, player.CurrentShift, player.CorrectShift, player.HP, player.Acceleration, player.MaxSpeed);
+        playerSpeed.text = string.Format("Time: {0:f2}s / 40.0s", time);
         UpdateAcceleration();
         UpdateSpeed();
-    
+        
     }
 
     void UpdateSpeed() {
@@ -127,6 +132,11 @@ public class UIHandler : MonoBehaviour
 
     void UpdateAcceleration() {
         accel.fillAmount = Mathf.Sqrt(Mathf.InverseLerp(player.accelerationModifier / player.shiftNumber, player.accelerationModifier, player.Acceleration) + 0.1f);
+    }
+
+    public void ShowFinishGame(string text) {
+        endText.text = text;
+        endPanel.SetActive(true);
     }
  
 }

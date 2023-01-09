@@ -26,7 +26,9 @@ public class Game : MonoBehaviour
 
     // Current level position
     float levelPosition;
-    
+
+    float gameTimeInSeconds = 0;
+
     // Loaded level
     Level level;
 
@@ -73,6 +75,18 @@ public class Game : MonoBehaviour
     {
         // Just an update to the background
         background.GetComponent<Renderer>().material.SetFloat("_Y", levelPosition / Screen.height * 15);
+        gameTimeInSeconds += Time.deltaTime;
+        UIhandler.time = gameTimeInSeconds;
+    }
+
+    public void FinishGame() {
+        if (player.HP <= 0) {
+            UIhandler.ShowFinishGame("You died lol");
+        } 
+        else
+        {
+            UIhandler.ShowFinishGame(string.Format("Your time: {0} s", gameTimeInSeconds));
+        }
     }
 
 }
