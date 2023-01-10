@@ -197,7 +197,7 @@ public class LevelEditor : EditorWindow
                 if (el.Properties.TryGetValue("length", out object v)) // if the element is a field, draw a rect
                 {
                     float length = Convert.ToSingle(v) * (end.x - start.x) / levelSize;
-                    Handles.DrawSolidRectangleWithOutline(new Rect(new Vector2(Mathf.Max(Mathf.Lerp(start.x, end.x, el.Y / levelSize) - (length / 2f), 0), start.y), new Vector2(length, end.y - start.y)), new Color(1, 1, 1, 0.3f), Color.black);
+                    Handles.DrawSolidRectangleWithOutline(new Rect(new Vector2(Mathf.Max(Mathf.Lerp(start.x, end.x, el.Y / levelSize), 0), start.y), new Vector2(length, end.y - start.y)), new Color(1, 1, 1, 0.3f), Color.black);
                 }
                 else // Draw a line on Y coordinate slider to indicate the position of each element
                 {

@@ -131,7 +131,7 @@ public class UIHandler : MonoBehaviour
     }
 
     void UpdateAcceleration() {
-        accel.fillAmount = Mathf.Sqrt(Mathf.InverseLerp(player.accelerationModifier / player.shiftNumber, player.accelerationModifier, player.Acceleration) + 0.1f);
+        accel.fillAmount = Mathf.Sqrt(Mathf.InverseLerp(player.accelerationModifier / player.shiftNumber, player.accelerationModifier, player.CurrentAcceleration) + 0.1f);
     }
 
     public void ShowFinishGame(string text) {

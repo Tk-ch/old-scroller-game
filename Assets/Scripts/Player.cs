@@ -82,8 +82,11 @@ public class Player : MonoBehaviour
     [SerializeField] [Range(0,10)] public float accelerationModifier;
 
     // Calculates acceleration depending on the modifier and the difference between the current shift and the correct one
-    public float Acceleration { get { return (CurrentShift == CorrectShift) ? accelerationModifier : accelerationModifier / (1 + Mathf.Abs(CurrentShift - CorrectShift)); } }
+    public float Acceleration { get {
+            if (Mathf.Abs(CurrentSpeed - cumulativeShiftSpeeds[CurrentShift]) < 0.05f) return 0;
+            return (CurrentShift == CorrectShift) ? accelerationModifier : accelerationModifier / (1 + Mathf.Abs(CurrentShift - CorrectShift)); } }
 
+    public float CurrentAcceleration; 
 
     [Header("Physics")]
 
@@ -131,6 +134,7 @@ public class Player : MonoBehaviour
         HP = sum;
         currentSpeed = minimumSpeed;
         CurrentShift = 0;
+        CurrentAcceleration = 0; 
     }
 
     public void TakeDamage(int hpDamage, int shiftDamage) {
@@ -166,7 +170,6 @@ public class Player : MonoBehaviour
         }
         if (Input.GetButtonUp("ShiftDown"))
         {
-            
             if (holdDownCoroutine != null) StopCoroutine(holdDownCoroutine);
             if (repeatShot != null) StopCoroutine(repeatShot);
         }
@@ -234,8 +237,8 @@ public class Player : MonoBehaviour
             }
         }
 
-        
-        CurrentSpeed += Acceleration * Time.fixedDeltaTime;
+        CurrentAcceleration = Mathf.Lerp(CurrentAcceleration, Acceleration, Time.fixedDeltaTime);
+        CurrentSpeed += CurrentAcceleration * Time.fixedDeltaTime;
 
 
 

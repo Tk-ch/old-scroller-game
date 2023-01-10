@@ -36,7 +36,7 @@ public class SimpleAnimator : MonoBehaviour
 
     private void Update()
     {
-        // player.transform.position = new Vector2(player.transform.position.x, Mathf.Lerp(-2, -4, Mathf.Pow(Mathf.InverseLerp(3, 25, player.CurrentSpeed), 0.3f)));
+        player.transform.position = new Vector2(player.transform.position.x, Mathf.Lerp(0, 2, Mathf.InverseLerp(0, 0.5f, player.CurrentAcceleration)) + Mathf.Lerp(-4, -5, Mathf.Pow(Mathf.InverseLerp(3, 25, player.CurrentSpeed), 0.3f)));
 
         if (player.isRolling)
         {
