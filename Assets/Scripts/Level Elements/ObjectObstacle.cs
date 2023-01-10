@@ -9,13 +9,14 @@ public class ObjectObstacle : Obstacle
     [SerializeField] float rotationSpeed = 0;
     [SerializeField] float relativeSpeed = 0;
     [SerializeField] float obstacleHP = 1;
-
+    [SerializeField] bool canBeDestroyedByHit = true;
+    [SerializeField] bool canBeDestroyedByShip = true;
     public float ObstacleHP
     { 
         get => obstacleHP; 
         set 
         {
-            if (value <= 0) Destroy(gameObject);
+            if (value <= 0 && canBeDestroyedByHit) Destroy(gameObject);
             obstacleHP = value;
         } 
     }
@@ -31,6 +32,6 @@ public class ObjectObstacle : Obstacle
     {
         if (!collision.CompareTag("Player")) return;
         game.player.TakeDamage((int)damage, (int)shiftDamage);
-        Destroy(gameObject);
+        if (canBeDestroyedByShip) Destroy(gameObject);
     }
 }

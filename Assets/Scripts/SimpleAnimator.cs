@@ -36,10 +36,11 @@ public class SimpleAnimator : MonoBehaviour
 
     private void Update()
     {
-        
+        // player.transform.position = new Vector2(player.transform.position.x, Mathf.Lerp(-2, -4, Mathf.Pow(Mathf.InverseLerp(3, 25, player.CurrentSpeed), 0.3f)));
+
         if (player.isRolling)
         {
-            transform.Rotate(0, 360 * Time.deltaTime, 0);
+            transform.Rotate(0, 720 * Time.deltaTime, 0);
         }
         thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Lerp(thruster.material.GetFloat("_tValue"), player.speedTValue, 0.5f), 2));
         mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, new Vector3(0,0,-10), 0.1f);

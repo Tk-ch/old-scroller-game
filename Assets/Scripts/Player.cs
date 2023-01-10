@@ -105,6 +105,13 @@ public class Player : MonoBehaviour
 
     [SerializeField] GameObject bullet;
 
+    [SerializeField] float holdDownTimeInSeconds;
+
+    [SerializeField] float repeatShootingInSeconds;
+
+    Coroutine holdDownCoroutine;
+    Coroutine repeatShot; 
+
     public float speedTValue {
         get
         {
@@ -154,22 +161,44 @@ public class Player : MonoBehaviour
         }
         if (Input.GetButtonDown("ShiftDown"))
         {
-            CurrentSpeed -= bullet.GetComponent<Projectile>().speedReduction;
-
-            float speed = CurrentShift > 0 ? cumulativeShiftSpeeds[CurrentShift - 1] : minimumSpeed;
-
-            if (CurrentSpeed < speed) CurrentShift -= 1; 
-            //CurrentSpeed = Mathf.Min(CurrentSpeed, MaxSpeed);
-            Shoot();
+            holdDownCoroutine = StartCoroutine(StopHoldDown());
+            repeatShot = StartCoroutine(RepeatedShooting());
+        }
+        if (Input.GetButtonUp("ShiftDown"))
+        {
+            
+            if (holdDownCoroutine != null) StopCoroutine(holdDownCoroutine);
+            if (repeatShot != null) StopCoroutine(repeatShot);
         }
         if (Input.GetButtonDown("ShiftUp"))
             CurrentShift += 1;
         
 
-        //if (Input.GetButtonDown("Fire")) 
-        //   Shoot();
-        
     }
+
+    IEnumerator RepeatedShooting()
+    {
+        CurrentSpeed -= bullet.GetComponent<Projectile>().speedReduction;
+        Shoot();
+        float speed = CurrentShift > 0 ? cumulativeShiftSpeeds[CurrentShift - 1] : minimumSpeed;
+        if (CurrentSpeed < speed)
+        {
+            CurrentShift -= 1;
+            StopCoroutine(holdDownCoroutine);
+            yield break;
+        }
+        yield return new WaitForSeconds(repeatShootingInSeconds);
+        repeatShot = StartCoroutine(RepeatedShooting());
+    }
+
+
+    IEnumerator StopHoldDown() {
+        yield return new WaitForSeconds(holdDownTimeInSeconds);
+        CurrentShift -= 1;
+        if (repeatShot != null) StopCoroutine(repeatShot);
+    }
+
+    
 
     void Shoot() {
         var b = Instantiate(bullet, transform.position, Quaternion.identity);
