@@ -124,12 +124,14 @@ public class LevelEditor : EditorWindow
         if (field.Value.GetType() == typeof(string)) selectedLevelElement.Properties[field.Key] = EditorGUILayout.TextField(label: field.Key, (string)selectedLevelElement.Properties[field.Key], expandDefault);
     }
 
+   
+
+
     // Just to list all the property GUI fields
     void ListProperties()
     {
         foreach (var el in selectedLevelElement.Properties.ToList())
             AddField(el);
-        
     }
 
     // Select a level element from loaded Level Elements
@@ -194,16 +196,7 @@ public class LevelEditor : EditorWindow
         {
             foreach (var el in level.Elements)
             {
-                if (el.Properties.TryGetValue("length", out object v)) // if the element is a field, draw a rect
-                {
-                    float length = Convert.ToSingle(v) * (end.x - start.x) / levelSize;
-                    Handles.DrawSolidRectangleWithOutline(new Rect(new Vector2(Mathf.Max(Mathf.Lerp(start.x, end.x, el.Y / levelSize), 0), start.y), new Vector2(length, end.y - start.y)), new Color(1, 1, 1, 0.3f), Color.black);
-                }
-                else // Draw a line on Y coordinate slider to indicate the position of each element
-                {
-                    Handles.color = Color.white;
-                    Handles.DrawLine(new Vector2(Mathf.Lerp(start.x, end.x, el.Y / levelSize), start.y), new Vector2(Mathf.Lerp(start.x, end.x, el.Y / levelSize), end.y));
-                }
+                DrawElement(start, end, el);
             }
         }
 
@@ -226,6 +219,24 @@ public class LevelEditor : EditorWindow
             GUILayout.EndScrollView();
         }
         if (GUILayout.Button("Save File", expandDefault)) SaveLevel();
+    }
+
+    private void DrawElement(Vector2 start, Vector2 end, LevelElementInfo el)
+    {
+        Color color = Color.HSVToRGB(Mathf.Abs(el.PrefabName.GetHashCode()) % 20 / 20f, 1.0f, 1.0f);
+        Color outlineColor = el == selectedLevelElement ? Color.white : Color.black;
+        if (el.Properties.TryGetValue("length", out object v)) // if the element is a field, draw a rect
+        {
+            float length = Convert.ToSingle(v) * (end.x - start.x) / levelSize;
+            Handles.DrawSolidRectangleWithOutline(new Rect(new Vector2(Mathf.Max(Mathf.Lerp(start.x, end.x, el.Y / levelSize), 0), start.y), new Vector2(length, end.y - start.y)), new Color(1, 1, 1, 0.3f), outlineColor);
+        }
+        else // Draw a rectangle on Y coordinate slider to indicate the position of each element
+        {
+            Handles.DrawSolidRectangleWithOutline(
+                new Rect(Mathf.Lerp(start.x, end.x, el.Y / levelSize) - 2.5f, Mathf.Lerp(start.y, end.y, (el.X + 3) / 6) - 2.5f, 5, 5),
+                color,
+                outlineColor);
+        }
     }
 
     private float SnapControls(string label, float value)

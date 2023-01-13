@@ -22,10 +22,12 @@ public class Game : MonoBehaviour
     // Transform that is used when instantiating prefabs
     [SerializeField] Transform obstacleParent;
 
+    [SerializeField] float endCoord;
+
     public UIHandler UIhandler;
 
     // Current level position
-    float levelPosition;
+    public float levelPosition;
 
     float gameTimeInSeconds = 0;
 
@@ -77,6 +79,7 @@ public class Game : MonoBehaviour
         background.GetComponent<Renderer>().material.SetFloat("_Y", levelPosition / Screen.height * 15);
         gameTimeInSeconds += Time.deltaTime;
         UIhandler.time = gameTimeInSeconds;
+        UIhandler.tValueMap = levelPosition / endCoord;
     }
 
     public void FinishGame() {

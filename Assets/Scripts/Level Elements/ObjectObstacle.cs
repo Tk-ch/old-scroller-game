@@ -6,11 +6,11 @@ using UnityEngine;
 // Such as meteors, asteroids, comets, etc.
 public class ObjectObstacle : Obstacle
 {
-    [SerializeField] float rotationSpeed = 0;
-    [SerializeField] float relativeSpeed = 0;
-    [SerializeField] float obstacleHP = 1;
-    [SerializeField] bool canBeDestroyedByHit = true;
-    [SerializeField] bool canBeDestroyedByShip = true;
+    [SerializeField] protected float rotationSpeed = 0;
+    [SerializeField] protected float relativeSpeed = 0;
+    [SerializeField] protected float obstacleHP = 1;
+    [SerializeField] protected bool canBeDestroyedByHit = true;
+    [SerializeField] protected bool canBeDestroyedByShip = true;
     public float ObstacleHP
     { 
         get => obstacleHP; 

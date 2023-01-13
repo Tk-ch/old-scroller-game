@@ -29,10 +29,16 @@ public class UIHandler : MonoBehaviour
     Coroutine resetWarning;
 
     [SerializeField] Image accel;
+    [SerializeField] Image accel2;
     [SerializeField] Image speed;
 
     [SerializeField] GameObject endPanel;
     [SerializeField] Text endText;
+
+    [SerializeField] float mapStart;
+    [SerializeField] float mapEnd;
+    [SerializeField] GameObject playerOnMap;
+    public float tValueMap;
 
     public float time;
 
@@ -113,6 +119,11 @@ public class UIHandler : MonoBehaviour
             shifts[i].GetComponent<Image>().color = player.shiftColors[i];
         }
         shifts[player.CurrentShift].GetComponent<Image>().color = player.shiftColors[player.CurrentShift] * 2;
+        speed.color = Color.white;
+        StartCoroutine(Utility.ExecuteAfterTime(ChangeSpeedColor, 0.07f));
+    }
+
+    private void ChangeSpeedColor() {
         speed.color = player.shiftColors[player.CurrentShift] * 2;
     }
 
@@ -123,6 +134,7 @@ public class UIHandler : MonoBehaviour
         UpdateAcceleration();
         UpdateSpeed();
         
+        playerOnMap.transform.localPosition = new Vector3(playerOnMap.transform.localPosition.x, Mathf.Lerp(mapStart, mapEnd, tValueMap));   
     }
 
     void UpdateSpeed() {
@@ -132,6 +144,7 @@ public class UIHandler : MonoBehaviour
 
     void UpdateAcceleration() {
         accel.fillAmount = Mathf.Sqrt(Mathf.InverseLerp(player.accelerationModifier / player.shiftNumber, player.accelerationModifier, player.CurrentAcceleration) + 0.1f);
+        accel2.fillAmount = Mathf.InverseLerp(player.accelerationModifier, player.accelerationModifier * 2, player.CurrentAcceleration) / 2;
     }
 
     public void ShowFinishGame(string text) {

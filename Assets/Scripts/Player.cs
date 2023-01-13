@@ -181,6 +181,7 @@ public class Player : MonoBehaviour
 
     IEnumerator RepeatedShooting()
     {
+        if (CurrentSpeed - minimumSpeed < bullet.GetComponent<Projectile>().speedReduction) yield break;
         CurrentSpeed -= bullet.GetComponent<Projectile>().speedReduction;
         Shoot();
         float speed = CurrentShift > 0 ? cumulativeShiftSpeeds[CurrentShift - 1] : minimumSpeed;
@@ -188,6 +189,7 @@ public class Player : MonoBehaviour
         {
             CurrentShift -= 1;
             StopCoroutine(holdDownCoroutine);
+            holdDownCoroutine = StartCoroutine(StopHoldDown());
             yield break;
         }
         yield return new WaitForSeconds(repeatShootingInSeconds);
@@ -199,6 +201,7 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(holdDownTimeInSeconds);
         CurrentShift -= 1;
         if (repeatShot != null) StopCoroutine(repeatShot);
+        holdDownCoroutine = StartCoroutine(StopHoldDown());
     }
 
     
@@ -223,6 +226,7 @@ public class Player : MonoBehaviour
     /// </summary>
     void FixedUpdate()
     {
+        if (isRolling) horizontalMovement *= 0.5f;
         transform.Translate(new Vector2(horizontalMovement * Time.fixedDeltaTime, 0), Space.World);
         
         float diff = Mathf.Abs(transform.position.x) - horizontalLimits;
