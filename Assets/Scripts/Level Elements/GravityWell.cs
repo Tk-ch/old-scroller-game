@@ -7,6 +7,13 @@ public class GravityWell : LevelElement
 
     float force;
 
+    private void Start()
+    {
+        if (force < 0) {
+            transform.Rotate(180,0,0);
+        }
+    }
+
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (!collision.CompareTag("Player")) return;

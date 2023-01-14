@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,11 +24,8 @@ public class Player : MonoBehaviour
             hp = Mathf.Clamp(value, 0, cumulativeShiftHPs[shiftNumber - 1]);
             HPChangeEvent.Invoke();
         } }
-
-    public delegate void EmptyEventListener();
-    
     // Is invoked when HP changes
-    public event EmptyEventListener HPChangeEvent;
+    public event Action HPChangeEvent;
     
     // Maximum shift depending on HP
     public int MaxShift {
@@ -49,7 +47,7 @@ public class Player : MonoBehaviour
 
     // Is called when the shift is changed
 
-    public event EmptyEventListener ShiftChangeEvent;
+    public event Action ShiftChangeEvent;
     public int CurrentShift { get => currentShift; set {
             currentShift = Mathf.Clamp(value, 0, MaxShift);
             ShiftChangeEvent.Invoke();
@@ -113,7 +111,12 @@ public class Player : MonoBehaviour
     [SerializeField] float repeatShootingInSeconds;
 
     Coroutine holdDownCoroutine;
-    Coroutine repeatShot; 
+    Coroutine repeatShot;
+
+    bool perfectSwitch;
+
+    [SerializeField] float perfectSwitchTiming;
+    [SerializeField] float perfectSwitchBoost;
 
     public float speedTValue {
         get
@@ -174,9 +177,13 @@ public class Player : MonoBehaviour
             if (repeatShot != null) StopCoroutine(repeatShot);
         }
         if (Input.GetButtonDown("ShiftUp"))
+        {
+            if (perfectSwitch) {
+                CurrentAcceleration += perfectSwitchBoost;
+                perfectSwitch = false;
+            }
             CurrentShift += 1;
-        
-
+        }  
     }
 
     IEnumerator RepeatedShooting()
@@ -243,8 +250,15 @@ public class Player : MonoBehaviour
 
         CurrentAcceleration = Mathf.Lerp(CurrentAcceleration, Acceleration, Time.fixedDeltaTime);
         CurrentSpeed += CurrentAcceleration * Time.fixedDeltaTime;
+        if (CurrentSpeed > MaxSpeed * 0.95f && !perfectSwitch) {
+            perfectSwitch = true;
+            Utility.ExecuteAfterTime(ResetPerfectSwitch, perfectSwitchTiming);
+        }
 
 
+    }
 
+    void ResetPerfectSwitch() {
+        perfectSwitch = false;
     }
 }

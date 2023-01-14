@@ -130,7 +130,7 @@ public class UIHandler : MonoBehaviour
     void Update()
     {
         //Some debug text values
-        playerSpeed.text = string.Format("Time: {0:f2}s / 40.0s", time);
+        playerSpeed.text = string.Format("Time: {0:f2}s / 60.00s", time);
         UpdateAcceleration();
         UpdateSpeed();
         

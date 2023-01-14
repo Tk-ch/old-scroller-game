@@ -5,7 +5,8 @@ using UnityEngine;
 public class Heal : ObjectObstacle
 {
 
-    new void OnTriggerEnter2D(Collider2D col) { 
+    new void OnTriggerEnter2D(Collider2D collision) {
+        Check(collision);
     }
     void OnTriggerStay2D(Collider2D collision) {
         Check(collision);

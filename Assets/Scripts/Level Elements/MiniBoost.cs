@@ -4,7 +4,10 @@ using UnityEngine;
 public class MiniBoost : ObjectObstacle
 {
     [SerializeField] float accelerationBoost;
-
+    new void OnTriggerEnter2D(Collider2D collision)
+    {
+        Check(collision);
+    }
     void OnTriggerStay2D(Collider2D collision)
     {
         Check(collision);
