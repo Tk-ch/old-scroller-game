@@ -64,7 +64,7 @@ public class Game : MonoBehaviour
     /// </summary>
     private void FixedUpdate()
     {
-        levelPosition += player.CurrentSpeed * Time.fixedDeltaTime;
+        levelPosition += player.ShipComponent.CurrentVerticalSpeed * Time.fixedDeltaTime;
 
         // Instantiates every element that is "before" a given position
         while (level.Elements.Count > 0 && level.Elements[0].Y <= levelPosition) {
@@ -83,7 +83,7 @@ public class Game : MonoBehaviour
     }
 
     public void FinishGame() {
-        if (player.HP <= 0) {
+        if (player.ArmorComponent.HP <= 0) {
             UIhandler.ShowFinishGame("You died lol");
         } 
         else

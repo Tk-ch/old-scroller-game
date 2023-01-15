@@ -11,13 +11,15 @@ public class UIHandler : MonoBehaviour
 {
     [SerializeField] Player player;
 
+    [SerializeField] public Color[] gearColors;
+
     [SerializeField] Text playerSpeed;
 
-    [SerializeField] Transform shiftParent;
+    [SerializeField] Transform gearParent;
 
-    [SerializeField] GameObject shiftPrefab;
+    [SerializeField] GameObject gearPrefab;
     [SerializeField] GameObject HPPrefab;
-    List<GameObject> shifts = new List<GameObject>();
+    List<GameObject> gears = new List<GameObject>();
     List<GameObject> HPs = new List<GameObject>();
 
     [SerializeField] GameObject warningPanel;
@@ -38,7 +40,7 @@ public class UIHandler : MonoBehaviour
     public float time;
 
     /// <summary>
-    /// Sets the warningPanel to a shift color when non-newtonian cloud appears or whatever
+    /// Sets the warningPanel to a gear color when non-newtonian cloud appears or whatever
     /// </summary>
     /// <param name="color">The color to set :) </param>
     /// <param name="durationInSeconds">Duration before it is reset to white</param>
@@ -55,37 +57,37 @@ public class UIHandler : MonoBehaviour
 
     private void Start()
     {
-        player.HPChangeEvent += OnHPChanged;
-        player.ShiftChangeEvent += OnShiftChanged;
-        CreateShifts();
+        player.ArmorComponent.OnHPChanged += OnHPChanged;
+        player.EngineComponent.OnGearChanged += OnGearChanged;
+        CreateGears();
     }
     /// <summary>
-    /// Generates UI elements for each shift
+    /// Generates UI elements for each gear
     /// </summary>
-    private void CreateShifts()
+    private void CreateGears()
     {
         int k = 0;
-        foreach (int hps in player.shiftHps)
+        foreach (int hps in player.ArmorComponent.GearHPs)
         {
-            GameObject shift = Instantiate(shiftPrefab, shiftParent);
-            shift.transform.SetSiblingIndex(0);
-            shift.GetComponent<Image>().color = player.shiftColors[k];
+            GameObject gear = Instantiate(gearPrefab, gearParent);
+            gear.transform.SetSiblingIndex(0);
+            gear.GetComponent<Image>().color = gearColors[k];
 
-            shifts.Add(shift);
-            CreateHPs(hps, shift);
+            gears.Add(gear);
+            CreateHPs(hps, gear);
             k++;
         }
     }
     /// <summary>
-    /// Generates HPs for each shift
+    /// Generates HPs for each gear
     /// </summary>
     /// <param name="hps">Number of HPs</param>
-    /// <param name="shift">Shift GameObject (parent)</param>
-    private void CreateHPs(int hps, GameObject shift)
+    /// <param name="gear">Shift GameObject (parent)</param>
+    private void CreateHPs(int hps, GameObject gear)
     {
         for (int i = 0; i < hps; i++)
         {
-            HPs.Add(Instantiate(HPPrefab, shift.transform));
+            HPs.Add(Instantiate(HPPrefab, gear.transform));
             HPs[i].transform.SetSiblingIndex(0);
         }
     }
@@ -95,7 +97,7 @@ public class UIHandler : MonoBehaviour
     /// </summary>
     private void OnHPChanged() {
         for (int i = 0; i < HPs.Count; i++) {
-            if (player.HP <= i) {
+            if (player.ArmorComponent.HP <= i) {
                 HPs[i].GetComponent<Image>().color = Color.black;
                 HPs[i].transform.SetSiblingIndex(0);
 
@@ -108,18 +110,18 @@ public class UIHandler : MonoBehaviour
     /// <summary>
     /// Updates the current shift with a color
     /// </summary>
-    private void OnShiftChanged() {
-        for (int i = 0; i < shifts.Count; i++)
+    private void OnGearChanged() {
+        for (int i = 0; i < gears.Count; i++)
         {
-            shifts[i].GetComponent<Image>().color = player.shiftColors[i];
+            gears[i].GetComponent<Image>().color = gearColors[i];
         }
-        shifts[player.CurrentShift].GetComponent<Image>().color = player.shiftColors[player.CurrentShift] * 2;
+        gears[player.EngineComponent.CurrentGear].GetComponent<Image>().color = gearColors[player.EngineComponent.CurrentGear] * 2;
         speed.color = Color.white;
         StartCoroutine(Utility.ExecuteAfterTime(ChangeSpeedColor, 0.07f));
     }
 
     private void ChangeSpeedColor() {
-        speed.color = player.shiftColors[player.CurrentShift] * 2;
+        speed.color = gearColors[player.EngineComponent.CurrentGear] * 2;
     }
 
     void Update()
@@ -133,13 +135,13 @@ public class UIHandler : MonoBehaviour
     }
 
     void UpdateSpeed() {
-        speed.fillAmount = player.speedTValue;
+        speed.fillAmount = player.ShipComponent.SpeedPercentage;
 
     }
 
     void UpdateAcceleration() {
-        accel.fillAmount = Mathf.Sqrt(Mathf.InverseLerp(player.accelerationModifier / player.shiftNumber, player.accelerationModifier, player.CurrentAcceleration) + 0.1f);
-        accel2.fillAmount = Mathf.InverseLerp(player.accelerationModifier, player.accelerationModifier * 2, player.CurrentAcceleration) / 2;
+        accel.fillAmount = Mathf.Sqrt(player.EngineComponent.AccelerationPercentage);
+        accel2.fillAmount = player.EngineComponent.AccelerationPercentage - 1;
     }
 
     public void ShowFinishGame(string text) {

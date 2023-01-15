@@ -16,8 +16,8 @@ public class MiniBoost : ObjectObstacle
     private void Check(Collider2D collision)
     {
         if (!collision.CompareTag("Player")) return;
-        if (!game.player.isRolling) return;
-        game.player.CurrentAcceleration += accelerationBoost;
+        if (!game.player.ShipComponent.IsRolling) return;
+        game.player.EngineComponent.CurrentAcceleration += accelerationBoost;
         if (canBeDestroyedByHit) Destroy(gameObject);
     }
 }

@@ -11,11 +11,12 @@ public class SimpleAnimator : MonoBehaviour
 
     private void Start()
     {
-        player.ShiftChangeEvent += UpdateThruster;
+        player.EngineComponent.OnGearChanged += UpdateThruster;
+        player.ArmorComponent.OnHPChanged += ShakeCamera;
     }
 
     void UpdateThruster() {
-        thruster.material.SetColor("_Color", player.shiftColors[player.CurrentShift]);
+        //thruster.material.SetColor("_Color", player.shiftColors[player.CurrentShift]);
     }
 
     public void ShowDeceleration()
@@ -36,13 +37,18 @@ public class SimpleAnimator : MonoBehaviour
 
     private void Update()
     {
-        player.transform.position = new Vector2(player.transform.position.x, Mathf.Lerp(0, 2, Mathf.InverseLerp(0, 0.5f, player.CurrentAcceleration)) + Mathf.Lerp(-4, -5, Mathf.Pow(Mathf.InverseLerp(3, 25, player.CurrentSpeed), 0.3f)));
+        float accelerationInfluence = Mathf.Lerp(0, 2, Mathf.InverseLerp(0, 0.5f, player.EngineComponent.CurrentAcceleration));
+        float speedInfluence = Mathf.Lerp(-4, -5, Mathf.Pow(Mathf.InverseLerp(3, 25, player.ShipComponent.CurrentVerticalSpeed), 0.3f));
+        player.transform.position = new Vector2(player.transform.position.x, accelerationInfluence + speedInfluence);
 
-        if (player.isRolling)
+        if (player.ShipComponent.IsRolling)
         {
             transform.Rotate(0, 720 * Time.deltaTime, 0);
+        } else
+        {
+            transform.rotation = Quaternion.identity;
         }
-        thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Lerp(thruster.material.GetFloat("_tValue"), player.speedTValue, 0.5f), 2));
+        thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Lerp(thruster.material.GetFloat("_tValue"), player.ShipComponent.SpeedPercentage, 0.5f), 2));
         mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, new Vector3(0,0,-10), 0.1f);
     }
 }
