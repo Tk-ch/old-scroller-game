@@ -7,7 +7,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {   
     //Контекст: 
-    //shift - передача
+    //gear - передача
     //speed - швидкість
     [Header("Shifts")]
 
