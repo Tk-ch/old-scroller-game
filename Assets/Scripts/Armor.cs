@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
+/// <summary>
+/// A class to manage ship's HP and check whether the shift can be increased. 
+/// </summary>
 public class Armor : MonoBehaviour
 {
-    [SerializeField] int[] _gearHPs;
 
-    int[] _cumulativeGearHPs;
-    int _hp;
+    [SerializeField] [InspectorLabel("Gear HPs")] private int[] _gearHPs;
+
+    private int[] _cumulativeGearHPs;
+    private int _hp;
 
     public int HP 
     { 

@@ -161,7 +161,7 @@ public class Player : MonoBehaviour
     private void GetInputs()
     {
         horizontalMovement = Input.GetAxis("Horizontal") * horizontalSpeed;
-        if (Input.GetButtonDown("Roll") & !isRolling)
+        if (Input.GetButtonDown("Roll") && !isRolling)
         {
             isRolling = true;
             StartCoroutine(ResetRoll());

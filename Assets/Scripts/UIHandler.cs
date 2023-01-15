@@ -9,19 +9,14 @@ using UnityEngine.UI;
 /// </summary>
 public class UIHandler : MonoBehaviour
 {
-    [SerializeField]
-    Player player;
+    [SerializeField] Player player;
 
-    [SerializeField]
-    Text playerSpeed;
+    [SerializeField] Text playerSpeed;
 
-    [SerializeField]
-    Transform shiftParent;
+    [SerializeField] Transform shiftParent;
 
-    [SerializeField]
-    GameObject shiftPrefab;
-    [SerializeField]
-    GameObject HPPrefab;
+    [SerializeField] GameObject shiftPrefab;
+    [SerializeField] GameObject HPPrefab;
     List<GameObject> shifts = new List<GameObject>();
     List<GameObject> HPs = new List<GameObject>();
 
