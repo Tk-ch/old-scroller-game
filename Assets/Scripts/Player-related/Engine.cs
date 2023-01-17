@@ -28,7 +28,7 @@ public class Engine : MonoBehaviour
         set => _currentSpeed = Mathf.Clamp(value, _minimumSpeed, CurrentGearSpeed);
     }
     public float SpeedPercentage
-    { // TODO fix the jumps in speed when the CurrentSpeed changes
+    { 
         get
         {
             float speedDifference = CurrentGear == 0 ? _minimumSpeed : _gearSpeeds[CurrentGear - 1];
