@@ -54,6 +54,6 @@ public class Armor : MonoBehaviour
     /// <returns>Whether the gear can be changed to the input gear</returns>
     public bool CheckGearHP(int gear) {
         gear = Mathf.Clamp(gear, 0, _cumulativeGearHPs.Length - 1); 
-        return HP >= _cumulativeGearHPs[gear];
+        return HP > _cumulativeGearHPs[gear - 1];
     }
 }
