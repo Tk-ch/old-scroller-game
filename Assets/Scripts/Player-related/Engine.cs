@@ -108,7 +108,7 @@ public class Engine : MonoBehaviour
 
         if (Mathf.Abs(CurrentSpeed - CorrectGearSpeed) < 0.05f) {
             _perfectSwitch = true;
-            Utility.ExecuteAfterTime(ResetPerfectSwitch, _perfectSwitchTiming);
+            StartCoroutine(Utility.ExecuteAfterTime(ResetPerfectSwitch, _perfectSwitchTiming));
         }
     }
 

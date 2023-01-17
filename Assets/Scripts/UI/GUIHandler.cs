@@ -7,20 +7,16 @@ using UnityEngine.UI;
 /// <summary>
 /// A class to handle the UI of the game, has references to various gameobjects and UI elements
 /// </summary>
-public class UIHandler : MonoBehaviour
+public class GUIHandler : MonoBehaviour
 {
     [SerializeField] Player player;
-
     [SerializeField] public Color[] gearColors;
-
+    [SerializeField] public Color[] gearColorsSelected;
     [SerializeField] Text playerSpeed;
-
     [SerializeField] Transform gearParent;
-
     [SerializeField] GameObject gearPrefab;
     [SerializeField] GameObject HPPrefab;
-    List<GameObject> gears = new List<GameObject>();
-    List<GameObject> HPs = new List<GameObject>();
+    private List<GearUI> gears = new List<GearUI>();
 
     [SerializeField] GameObject warningPanel;
     Coroutine resetWarning;
@@ -47,11 +43,10 @@ public class UIHandler : MonoBehaviour
     public void SetWarning(Color color, float durationInSeconds) {
         warningPanel.GetComponent<Image>().color = color;
         if (resetWarning != null) StopCoroutine(resetWarning);
-        resetWarning = StartCoroutine(ResetWarning(durationInSeconds));
+        resetWarning = StartCoroutine(Utility.ExecuteAfterTime(ResetWarning, durationInSeconds));
     }
 
-    IEnumerator ResetWarning(float duration) {
-        yield return new WaitForSeconds(duration);
+    void ResetWarning() {
         warningPanel.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
     }
 
@@ -72,39 +67,23 @@ public class UIHandler : MonoBehaviour
             GameObject gear = Instantiate(gearPrefab, gearParent);
             gear.transform.SetSiblingIndex(0);
             gear.GetComponent<Image>().color = gearColors[k];
+            GearUI gearUI = gear.GetComponent<GearUI>();
+            gearUI.gearColor = gearColors[k];
+            gearUI.gearColorSelected = gearColorsSelected[k];
+            gearUI.CreateHPs(hps);
 
-            gears.Add(gear);
-            CreateHPs(hps, gear);
+            gears.Add(gearUI);
             k++;
         }
     }
     /// <summary>
-    /// Generates HPs for each gear
-    /// </summary>
-    /// <param name="hps">Number of HPs</param>
-    /// <param name="gear">Shift GameObject (parent)</param>
-    private void CreateHPs(int hps, GameObject gear)
-    {
-        for (int i = 0; i < hps; i++)
-        {
-            HPs.Add(Instantiate(HPPrefab, gear.transform));
-            HPs[i].transform.SetSiblingIndex(0);
-        }
-    }
-
-    /// <summary>
     /// Updates the HPs after taken damage/healed
     /// </summary>
     private void OnHPChanged() {
-        for (int i = 0; i < HPs.Count; i++) {
-            if (player.ArmorComponent.HP <= i) {
-                HPs[i].GetComponent<Image>().color = Color.black;
-                HPs[i].transform.SetSiblingIndex(0);
-
-            } else
-            {
-                HPs[i].GetComponent<Image>().color = Color.green;
-            }
+        int HPs = player.ArmorComponent.HP;
+        foreach (GearUI gear in gears)
+        {
+            HPs -= gear.UpdateHPs(HPs);
         }
     }
     /// <summary>
@@ -113,20 +92,17 @@ public class UIHandler : MonoBehaviour
     private void OnGearChanged() {
         for (int i = 0; i < gears.Count; i++)
         {
-            gears[i].GetComponent<Image>().color = gearColors[i];
+            gears[i].SelectGear(i == player.EngineComponent.CurrentGear);
         }
-        gears[player.EngineComponent.CurrentGear].GetComponent<Image>().color = gearColors[player.EngineComponent.CurrentGear] * 0.5f;
         speed.color = Color.white;
         StartCoroutine(Utility.ExecuteAfterTime(ChangeSpeedColor, 0.07f));
     }
 
-    private void ChangeSpeedColor() {
-        speed.color = gearColors[player.EngineComponent.CurrentGear] * 2;
-    }
+    private void ChangeSpeedColor() => speed.color = gearColorsSelected[player.EngineComponent.CurrentGear];
+    
 
     void Update()
     {
-        //Some debug text values
         playerSpeed.text = string.Format("Time: {0:f2}s / 60.00s", time);
         UpdateAcceleration();
         UpdateSpeed();

@@ -24,7 +24,7 @@ public class Game : MonoBehaviour
 
     [SerializeField] float endCoord;
 
-    public UIHandler UIhandler;
+    public GUIHandler UIhandler;
 
     // Current level position
     public float levelPosition;

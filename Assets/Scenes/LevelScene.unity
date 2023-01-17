@@ -1178,11 +1178,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1058953424}
   gearColors:
-  - {r: 1, g: 0.5952402, b: 0, a: 1}
-  - {r: 0, g: 1, b: 0.9033842, a: 1}
-  - {r: 0.054359674, g: 1, b: 0, a: 1}
+  - {r: 0.511, g: 0.30459607, b: 0, a: 1}
+  - {r: 0, g: 0.48900002, b: 0.44105887, a: 1}
+  - {r: 0.03074503, g: 0.56, b: 0, a: 1}
+  - {r: 0.582, g: 0, b: 0, a: 1}
+  - {r: 0.532, g: 0.33380392, b: 0.52365494, a: 1}
+  gearColorsSelected:
+  - {r: 1, g: 0.59607846, b: 0, a: 1}
+  - {r: 0, g: 1, b: 0.90196085, a: 1}
+  - {r: 0.054901965, g: 1, b: 0, a: 1}
   - {r: 1, g: 0, b: 0, a: 1}
-  - {r: 1, g: 0.6273585, b: 0.98367107, a: 1}
+  - {r: 1, g: 0.627451, b: 0.9843138, a: 1}
   playerSpeed: {fileID: 1757640068}
   gearParent: {fileID: 1210425013}
   gearPrefab: {fileID: 8209005465459201168, guid: a4690e8645e743a4994624904e03a3f7, type: 3}
@@ -1198,43 +1204,6 @@ MonoBehaviour:
   playerOnMap: {fileID: 70517725}
   tValueMap: 0
   time: 0
---- !u!84 &923245039
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 2034
-  m_Height: 1144
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 90
-  m_ColorFormat: 6
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 0
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &1058953417
 GameObject:
   m_ObjectHideFlags: 0
@@ -1677,7 +1646,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 487f1ff592018c340ac25e2d115ad82a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderTexture: {fileID: 923245039}
+  renderTexture: {fileID: 1748364977}
   material: {fileID: 2100000, guid: e6ff111c5b8de464ba218d02a78df817, type: 2}
 --- !u!21 &1471062465
 Material:
@@ -1720,7 +1689,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 923245039}
+        m_Texture: {fileID: 1748364977}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -2005,6 +1974,43 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1644856826}
   m_CullTransparentMesh: 1
+--- !u!84 &1748364977
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 2034
+  m_Height: 1144
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 90
+  m_ColorFormat: 6
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 0
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &1757640066
 GameObject:
   m_ObjectHideFlags: 0
