@@ -64,7 +64,6 @@ public class Player : MonoBehaviour
         }
         yield return new WaitForSeconds(repeatShootingInSeconds);
         _repeatedShootingCoro = StartCoroutine(RepeatedShooting());
-        _stopHoldDownCoro = StartCoroutine(StopHoldDown());
     }
 
     IEnumerator StopHoldDown() {

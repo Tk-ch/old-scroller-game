@@ -64,6 +64,7 @@ public class Game : MonoBehaviour
     /// </summary>
     private void FixedUpdate()
     {
+
         levelPosition += player.EngineComponent.CurrentSpeed * Time.fixedDeltaTime;
 
         // Instantiates every element that is "before" a given position
