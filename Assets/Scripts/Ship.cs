@@ -17,20 +17,11 @@ public class Ship : MonoBehaviour
     [SerializeField] private GameObject _bulletPrefab;
     [SerializeField] private float _bulletSpeed; 
 
-    private Engine _engine;
-    private float _currentVerticalSpeed;
+    private Player _player;
+    Player PlayerComponent => _player ?? (_player = gameObject.GetComponent<Player>());
 
-    public float SpeedPercentage
-    { // TODO fix the jumps in speed when the CurrentSpeed changes
-        get
-        {
-            return CurrentVerticalSpeed / _engine.CurrentGearSpeed;
-        }
-    }
-    public float CurrentVerticalSpeed { 
-        get => _currentVerticalSpeed; 
-        set => _currentVerticalSpeed = Mathf.Clamp(value, _minimumVerticalSpeed, _engine.CurrentGearSpeed); 
-    }
+
+   
     public bool IsRolling { get; set; }
     public float HorizontalInput { get; set; }
     
@@ -44,22 +35,15 @@ public class Ship : MonoBehaviour
 
     public bool Shoot()
     {
-        if (CurrentVerticalSpeed - _minimumVerticalSpeed < _bulletPrefab.GetComponent<Projectile>().SpeedReduction) return false;
+        if (PlayerComponent.EngineComponent.CurrentSpeed - _minimumVerticalSpeed < _bulletPrefab.GetComponent<Projectile>().SpeedReduction) return false;
         GameObject bullet = Instantiate(_bulletPrefab, transform.position, Quaternion.identity);
         bullet.GetComponent<Rigidbody2D>().AddForce(Vector2.up * _bulletSpeed);
-        CurrentVerticalSpeed -= bullet.GetComponent<Projectile>().SpeedReduction;
-        return _engine.DecreaseGearBySpeed();
+        PlayerComponent.EngineComponent.CurrentSpeed -= bullet.GetComponent<Projectile>().SpeedReduction;
+        return PlayerComponent.EngineComponent.DecreaseGearBySpeed();
     }
-
-    private void Start()
-    {
-        _engine = GetComponent<Engine>();
-    }
-
 
     private void FixedUpdate()
     {
-        CurrentVerticalSpeed += _engine.CurrentAcceleration * Time.fixedDeltaTime;
         transform.Translate(new Vector2(HorizontalInput * _horizontalSpeed * Time.fixedDeltaTime, 0), Space.World);
         float diff = Mathf.Abs(transform.position.x) - _horizontalLimits;
         if (diff > 0)

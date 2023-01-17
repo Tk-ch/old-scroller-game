@@ -135,7 +135,7 @@ public class UIHandler : MonoBehaviour
     }
 
     void UpdateSpeed() {
-        speed.fillAmount = player.ShipComponent.SpeedPercentage;
+        speed.fillAmount = player.EngineComponent.SpeedPercentage;
 
     }
 

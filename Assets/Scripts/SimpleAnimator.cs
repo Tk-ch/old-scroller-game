@@ -38,7 +38,7 @@ public class SimpleAnimator : MonoBehaviour
     private void Update()
     {
         float accelerationInfluence = Mathf.Lerp(0, 2, Mathf.InverseLerp(0, 0.5f, player.EngineComponent.CurrentAcceleration));
-        float speedInfluence = Mathf.Lerp(-4, -5, Mathf.Pow(Mathf.InverseLerp(3, 25, player.ShipComponent.CurrentVerticalSpeed), 0.3f));
+        float speedInfluence = Mathf.Lerp(-4, -5, Mathf.Pow(Mathf.InverseLerp(3, 25, player.EngineComponent.CurrentSpeed), 0.3f));
         player.transform.position = new Vector2(player.transform.position.x, accelerationInfluence + speedInfluence);
 
         if (player.ShipComponent.IsRolling)
@@ -48,7 +48,7 @@ public class SimpleAnimator : MonoBehaviour
         {
             transform.rotation = Quaternion.identity;
         }
-        thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Lerp(thruster.material.GetFloat("_tValue"), player.ShipComponent.SpeedPercentage, 0.5f), 2));
+        thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Lerp(thruster.material.GetFloat("_tValue"), player.EngineComponent.SpeedPercentage, 0.5f), 2));
         mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, new Vector3(0,0,-10), 0.1f);
     }
 }

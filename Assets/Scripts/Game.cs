@@ -64,7 +64,7 @@ public class Game : MonoBehaviour
     /// </summary>
     private void FixedUpdate()
     {
-        levelPosition += player.ShipComponent.CurrentVerticalSpeed * Time.fixedDeltaTime;
+        levelPosition += player.EngineComponent.CurrentSpeed * Time.fixedDeltaTime;
 
         // Instantiates every element that is "before" a given position
         while (level.Elements.Count > 0 && level.Elements[0].Y <= levelPosition) {

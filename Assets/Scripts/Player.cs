@@ -7,11 +7,15 @@ using UnityEngine;
 /// Component to handle them inputs and have links to other components
 /// </summary>
 public class Player : MonoBehaviour
-{   
+{
+    private Ship _shipComponent;
+    private Engine _engineComponent;
+    private Armor _armorComponent;
 
-    public Ship ShipComponent { get; set; }
-    public Engine EngineComponent { get; set; }
-    public Armor ArmorComponent { get; set; }
+
+    public Ship ShipComponent => _shipComponent ?? (_shipComponent= GetComponent<Ship>());
+    public Engine EngineComponent => _engineComponent ?? (_engineComponent = GetComponent<Engine>());
+    public Armor ArmorComponent => _armorComponent ?? (_armorComponent = GetComponent<Armor>());
 
     [SerializeField] SimpleAnimator myAnimator;
     [SerializeField] float holdDownTimeInSeconds;
@@ -19,13 +23,6 @@ public class Player : MonoBehaviour
 
     Coroutine _stopHoldDownCoro;
     Coroutine _repeatedShootingCoro;
-
-    private void Start()
-    {
-        ShipComponent = GetComponent<Ship>(); 
-        EngineComponent = GetComponent<Engine>();
-        ArmorComponent = GetComponent<Armor>();
-    }
 
     void Update()
     {
