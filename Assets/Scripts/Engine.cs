@@ -12,12 +12,13 @@ public class Engine : MonoBehaviour
     [SerializeField] float _accelerationModifier;
     [SerializeField] float _accelerationChangeSpeed = 0.1f;
 
-    [SerializeField] float perfectSwitchTiming;
-    [SerializeField] float perfectSwitchBoost;
+    [SerializeField] float _perfectSwitchTiming;
+    [SerializeField] float _perfectSwitchBoost;
 
     private float _currentSpeed;
     private int _currentGear = 0;
     private Armor _armorComponent;
+    private bool _perfectSwitch;
 
     Armor ArmorComponent => _armorComponent ?? (_armorComponent = GetComponent<Armor>());
 
@@ -38,8 +39,16 @@ public class Engine : MonoBehaviour
     public int CurrentGear {  // Clamped between 0 and gear number
         get => _currentGear; 
         set { 
-            if (ArmorComponent.CheckGearHP(value)) {
-                _currentGear = Mathf.Clamp(value, 0, _gearSpeeds.Length - 1);
+            int newGear = Mathf.Clamp(value, 0, _gearSpeeds.Length - 1);
+            if (ArmorComponent.CheckGearHP(newGear)) {
+
+                if (_perfectSwitch && newGear > _currentGear)
+                {
+                    CurrentAcceleration += _perfectSwitchBoost;
+                    OnPerfectSwitch?.Invoke();
+                    _perfectSwitch = false;
+                }
+                _currentGear = newGear;
                 OnGearChanged?.Invoke();
             }
         }
@@ -73,12 +82,18 @@ public class Engine : MonoBehaviour
     public float AccelerationPercentage { get => CurrentAcceleration / _accelerationModifier; }
 
     public event Action OnGearChanged;
+    public event Action OnPerfectSwitch;
 
-
+    // Decreases gear by one if correct gear is lower than current gear
     public bool DecreaseGearBySpeed() {
         if (CorrectGear >= CurrentGear) return false;
         CurrentGear--;
         return true;    
+    }
+
+    // Checks if ship can shoot at current speed
+    public bool CanShoot(float speedReduction) {
+        return CurrentSpeed - _minimumSpeed >= speedReduction;
     }
 
     private void Start()
@@ -90,5 +105,14 @@ public class Engine : MonoBehaviour
     {
         CurrentAcceleration = Mathf.Lerp(CurrentAcceleration, Acceleration, _accelerationChangeSpeed * Time.fixedDeltaTime);
         CurrentSpeed += CurrentAcceleration * Time.fixedDeltaTime;
+
+        if (Mathf.Abs(CurrentSpeed - CorrectGearSpeed) < 0.05f) {
+            _perfectSwitch = true;
+            Utility.ExecuteAfterTime(ResetPerfectSwitch, _perfectSwitchTiming);
+        }
+    }
+
+    private void ResetPerfectSwitch() {
+        _perfectSwitch = false;
     }
 }

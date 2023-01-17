@@ -630,43 +630,6 @@ MonoBehaviour:
   endCoord: 400
   UIhandler: {fileID: 895115666}
   levelPosition: 0
---- !u!84 &604580468
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 2024
-  m_Height: 1138
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 90
-  m_ColorFormat: 6
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 0
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &612124725
 GameObject:
   m_ObjectHideFlags: 0
@@ -1235,6 +1198,43 @@ MonoBehaviour:
   playerOnMap: {fileID: 70517725}
   tValueMap: 0
   time: 0
+--- !u!84 &923245039
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 2034
+  m_Height: 1144
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 90
+  m_ColorFormat: 6
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 0
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &1058953417
 GameObject:
   m_ObjectHideFlags: 0
@@ -1438,10 +1438,11 @@ MonoBehaviour:
   - 12.5
   - 20
   - 25
+  _minimumSpeed: 3
   _accelerationModifier: 1
   _accelerationChangeSpeed: 1
-  perfectSwitchTiming: 0.05
-  perfectSwitchBoost: 1
+  _perfectSwitchTiming: 0.1
+  _perfectSwitchBoost: 0.5
 --- !u!114 &1058953427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1454,7 +1455,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d57b4f687edb24cac180742cb05be6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _minimumVerticalSpeed: 3
   _horizontalSpeed: 12
   _limitLerpSpeed: 0.4
   _horizontalLimits: 2.5
@@ -1677,7 +1677,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 487f1ff592018c340ac25e2d115ad82a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderTexture: {fileID: 604580468}
+  renderTexture: {fileID: 923245039}
   material: {fileID: 2100000, guid: e6ff111c5b8de464ba218d02a78df817, type: 2}
 --- !u!21 &1471062465
 Material:
@@ -1720,7 +1720,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 604580468}
+        m_Texture: {fileID: 923245039}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -1804,7 +1804,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -381.9, y: -21.400024}
+  m_AnchoredPosition: {x: -381.90002, y: -21.400024}
   m_SizeDelta: {x: -704.56, y: -428.71}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1491498810
@@ -1882,7 +1882,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -348.80002, y: -157}
+  m_AnchoredPosition: {x: -348.80005, y: -157}
   m_SizeDelta: {x: -704.56, y: -426.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1550529842

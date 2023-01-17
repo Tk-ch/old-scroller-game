@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-
+using UnityEngine.Diagnostics;
 
 /// <summary>
 /// Component that handles ship's position in space
 /// </summary>
 public class Ship : MonoBehaviour
 {
-    [SerializeField] private float _minimumVerticalSpeed; 
     [SerializeField] private float _horizontalSpeed;
     [SerializeField] private float _limitLerpSpeed; //швидкість повернення до лімітів дороги
     [SerializeField] private float _horizontalLimits; //горизонтальні ліміти дороги
@@ -35,7 +34,7 @@ public class Ship : MonoBehaviour
 
     public bool Shoot()
     {
-        if (PlayerComponent.EngineComponent.CurrentSpeed - _minimumVerticalSpeed < _bulletPrefab.GetComponent<Projectile>().SpeedReduction) return false;
+        if (!PlayerComponent.EngineComponent.CanShoot(_bulletPrefab.GetComponent<Projectile>().SpeedReduction)) return false;
         GameObject bullet = Instantiate(_bulletPrefab, transform.position, Quaternion.identity);
         bullet.GetComponent<Rigidbody2D>().AddForce(Vector2.up * _bulletSpeed);
         PlayerComponent.EngineComponent.CurrentSpeed -= bullet.GetComponent<Projectile>().SpeedReduction;

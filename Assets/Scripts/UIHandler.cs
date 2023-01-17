@@ -115,7 +115,7 @@ public class UIHandler : MonoBehaviour
         {
             gears[i].GetComponent<Image>().color = gearColors[i];
         }
-        gears[player.EngineComponent.CurrentGear].GetComponent<Image>().color = gearColors[player.EngineComponent.CurrentGear] * 2;
+        gears[player.EngineComponent.CurrentGear].GetComponent<Image>().color = gearColors[player.EngineComponent.CurrentGear] * 0.5f;
         speed.color = Color.white;
         StartCoroutine(Utility.ExecuteAfterTime(ChangeSpeedColor, 0.07f));
     }
