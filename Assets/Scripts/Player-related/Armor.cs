@@ -20,13 +20,15 @@ public class Armor : MonoBehaviour
         get => _hp;
         set 
         {
-            int index = Mathf.Max(0, _cumulativeGearHPs.Length - 1); 
+            int index = Mathf.Max(0, _cumulativeGearHPs.Length - 1);
+            if (value < _hp) OnHPDecreased?.Invoke();
             _hp = Mathf.Clamp(value, 0, _cumulativeGearHPs[index]);
             OnHPChanged?.Invoke();
         } 
     }
 
     public event Action OnHPChanged;
+    public event Action OnHPDecreased;
 
     private void Start()
     {

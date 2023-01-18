@@ -57,6 +57,7 @@ public class Engine : MonoBehaviour
     {
         get
         {
+            if (Mathf.Abs(CurrentGearSpeed - CurrentSpeed) < 0.05f) return 0;
             return (CurrentGear == CorrectGear) ? _accelerationModifier : _accelerationModifier / (1 + Mathf.Abs(CurrentGear - CorrectGear));
         }
     }
