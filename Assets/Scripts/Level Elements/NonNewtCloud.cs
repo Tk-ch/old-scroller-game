@@ -12,7 +12,7 @@ public class NonNewtCloud : FieldObstacle
 
     private new void Start()
     {
-        Color c = game.UIhandler.gearColors[(int)gear] * 2;
+        Color c = game.UIhandler._gearColors[(int)gear] * 2;
         c.a = 0.5f;
         GetComponent<SpriteRenderer>().color = c;
         game.UIhandler.SetWarning(c, 5f);

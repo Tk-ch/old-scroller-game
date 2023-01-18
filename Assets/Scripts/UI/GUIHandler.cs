@@ -9,10 +9,10 @@ using UnityEngine.UI;
 /// </summary>
 public class GUIHandler : MonoBehaviour
 {
-    [SerializeField] Player player;
-    [SerializeField] public Color[] gearColors;
-    [SerializeField] public Color[] gearColorsSelected;
-    [SerializeField] Text playerSpeed;
+    [SerializeField] Player _player;
+    [SerializeField] public Color[] _gearColors;
+    [SerializeField] private Color[] _gearColorsSelected;
+    [SerializeField] Text _levelTime;
     [SerializeField] Transform gearParent;
     [SerializeField] GameObject gearPrefab;
     [SerializeField] GameObject HPPrefab;
@@ -35,6 +35,8 @@ public class GUIHandler : MonoBehaviour
 
     public float time;
 
+    public Color[] GearColorsSelected { get => _gearColorsSelected; set => _gearColorsSelected = value; }
+
     /// <summary>
     /// Sets the warningPanel to a gear color when non-newtonian cloud appears or whatever
     /// </summary>
@@ -52,8 +54,8 @@ public class GUIHandler : MonoBehaviour
 
     private void Start()
     {
-        player.ArmorComponent.OnHPChanged += OnHPChanged;
-        player.EngineComponent.OnGearChanged += OnGearChanged;
+        _player.ArmorComponent.OnHPChanged += OnHPChanged;
+        _player.EngineComponent.OnGearChanged += OnGearChanged;
         CreateGears();
     }
     /// <summary>
@@ -62,14 +64,14 @@ public class GUIHandler : MonoBehaviour
     private void CreateGears()
     {
         int k = 0;
-        foreach (int hps in player.ArmorComponent.GearHPs)
+        foreach (int hps in _player.ArmorComponent.GearHPs)
         {
             GameObject gear = Instantiate(gearPrefab, gearParent);
             gear.transform.SetSiblingIndex(0);
-            gear.GetComponent<Image>().color = gearColors[k];
+            gear.GetComponent<Image>().color = _gearColors[k];
             GearUI gearUI = gear.GetComponent<GearUI>();
-            gearUI.gearColor = gearColors[k];
-            gearUI.gearColorSelected = gearColorsSelected[k];
+            gearUI.gearColor = _gearColors[k];
+            gearUI.gearColorSelected = GearColorsSelected[k];
             gearUI.CreateHPs(hps);
 
             gears.Add(gearUI);
@@ -80,7 +82,7 @@ public class GUIHandler : MonoBehaviour
     /// Updates the HPs after taken damage/healed
     /// </summary>
     private void OnHPChanged() {
-        int HPs = player.ArmorComponent.HP;
+        int HPs = _player.ArmorComponent.HP;
         foreach (GearUI gear in gears)
         {
             HPs -= gear.UpdateHPs(HPs);
@@ -92,18 +94,18 @@ public class GUIHandler : MonoBehaviour
     private void OnGearChanged() {
         for (int i = 0; i < gears.Count; i++)
         {
-            gears[i].SelectGear(i == player.EngineComponent.CurrentGear);
+            gears[i].SelectGear(i == _player.EngineComponent.CurrentGear);
         }
         speed.color = Color.white;
         StartCoroutine(Utility.ExecuteAfterTime(ChangeSpeedColor, 0.07f));
     }
 
-    private void ChangeSpeedColor() => speed.color = gearColorsSelected[player.EngineComponent.CurrentGear];
+    private void ChangeSpeedColor() => speed.color = GearColorsSelected[_player.EngineComponent.CurrentGear];
     
 
     void Update()
     {
-        playerSpeed.text = string.Format("Time: {0:f2}s / 60.00s", time);
+        _levelTime.text = string.Format("Time: {0:f2}s / 60.00s", time);
         UpdateAcceleration();
         UpdateSpeed();
         
@@ -111,13 +113,13 @@ public class GUIHandler : MonoBehaviour
     }
 
     void UpdateSpeed() {
-        speed.fillAmount = player.EngineComponent.SpeedPercentage;
+        speed.fillAmount = _player.EngineComponent.SpeedPercentage;
 
     }
 
     void UpdateAcceleration() {
-        accel.fillAmount = Mathf.Sqrt(player.EngineComponent.AccelerationPercentage);
-        accel2.fillAmount = player.EngineComponent.AccelerationPercentage - 1;
+        accel.fillAmount = Mathf.Sqrt(_player.EngineComponent.AccelerationPercentage);
+        accel2.fillAmount = _player.EngineComponent.AccelerationPercentage - 1;
     }
 
     public void ShowFinishGame(string text) {

@@ -15,9 +15,9 @@ public class Player : MonoBehaviour
     public Engine EngineComponent => _engineComponent ?? (_engineComponent = GetComponent<Engine>());
     public Armor ArmorComponent => _armorComponent ?? (_armorComponent = GetComponent<Armor>());
 
-    [SerializeField] SimpleAnimator myAnimator;
     [SerializeField] float holdDownTimeInSeconds;
     [SerializeField] float repeatShootingInSeconds;
+    [SerializeField] public GUIHandler guiHandler;
 
     Coroutine _stopHoldDownCoro;
     Coroutine _repeatedShootingCoro;
