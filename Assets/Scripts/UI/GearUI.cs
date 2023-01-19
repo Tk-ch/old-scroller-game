@@ -24,7 +24,7 @@ public class GearUI : MonoBehaviour
     public int UpdateHPs(int hps) {
         for (int i = 0; i < _HPs.Count; i++)
         {
-            if (hps < i) {
+            if (hps <= i) {
                 _HPs[i].GetComponent<Image>().color = Color.black;
                 _HPs[i].transform.SetSiblingIndex(0);
             }

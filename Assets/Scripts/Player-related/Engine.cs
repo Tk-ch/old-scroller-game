@@ -40,17 +40,16 @@ public class Engine : MonoBehaviour
         get => _currentGear; 
         set { 
             int newGear = Mathf.Clamp(value, 0, _gearSpeeds.Length - 1);
-            if (ArmorComponent.CheckGearHP(newGear)) {
-
-                if (_perfectSwitch && newGear > _currentGear)
-                {
-                    CurrentAcceleration += _perfectSwitchBoost;
-                    OnPerfectSwitch?.Invoke();
-                    _perfectSwitch = false;
-                }
-                _currentGear = newGear;
-                OnGearChanged?.Invoke();
+            while (!ArmorComponent.CheckGearHP(newGear) && newGear > 0) newGear--; 
+            if (_perfectSwitch && newGear > _currentGear)
+            {
+                CurrentAcceleration += _perfectSwitchBoost;
+                OnPerfectSwitch?.Invoke();
+                _perfectSwitch = false;
             }
+            _currentGear = newGear;
+            OnGearChanged?.Invoke();
+            
         }
     }
     public float Acceleration
@@ -100,6 +99,11 @@ public class Engine : MonoBehaviour
     private void Start()
     {
         OnGearChanged?.Invoke();
+        ArmorComponent.OnHPDecreased += RecheckGears;
+    }
+
+    private void RecheckGears() {
+        if (!ArmorComponent.CheckGearHP(CurrentGear)) CurrentGear--;
     }
 
     private void FixedUpdate()

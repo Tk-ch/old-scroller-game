@@ -21,8 +21,10 @@ public class Armor : MonoBehaviour
         set 
         {
             int index = Mathf.Max(0, _cumulativeGearHPs.Length - 1);
-            if (value < _hp) OnHPDecreased?.Invoke();
+
+            int dif = value - _hp;
             _hp = Mathf.Clamp(value, 0, _cumulativeGearHPs[index]);
+            if (dif < 0) { OnHPDecreased?.Invoke();  }
             OnHPChanged?.Invoke();
         } 
     }
@@ -55,7 +57,7 @@ public class Armor : MonoBehaviour
     /// <param name="gear">The gear index</param>
     /// <returns>Whether the gear can be changed to the input gear</returns>
     public bool CheckGearHP(int gear) {
-        gear = Mathf.Clamp(gear, 1, _cumulativeGearHPs.Length - 1); 
-        return HP >= _cumulativeGearHPs[gear - 1];
+        gear = Mathf.Clamp(gear, 1, _cumulativeGearHPs.Length); 
+        return HP > _cumulativeGearHPs[gear - 1];
     }
 }

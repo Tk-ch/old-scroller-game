@@ -38,6 +38,6 @@ public class ShipAnimator : MonoBehaviour
         {
             transform.rotation = Quaternion.identity;
         }
-        _thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Lerp(_thruster.material.GetFloat("_tValue"), _player.EngineComponent.SpeedPercentage, 0.5f), 2));
+        _thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Clamp01(Mathf.Lerp(_thruster.material.GetFloat("_tValue"), _player.EngineComponent.SpeedPercentage, 0.5f)) + 0.1f, 2));
     }
 }

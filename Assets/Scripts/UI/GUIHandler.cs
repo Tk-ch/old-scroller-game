@@ -24,6 +24,8 @@ public class GUIHandler : MonoBehaviour
     [SerializeField] Image accel;
     [SerializeField] Image accel2;
     [SerializeField] Image speed;
+    [SerializeField] Image speed2;
+    [SerializeField] Image speedParent;
 
     [SerializeField] GameObject endPanel;
     [SerializeField] Text endText;
@@ -98,9 +100,14 @@ public class GUIHandler : MonoBehaviour
         }
         speed.color = Color.white;
         StartCoroutine(Utility.ExecuteAfterTime(ChangeSpeedColor, 0.07f));
+        speed2.fillAmount = 0;
     }
 
-    private void ChangeSpeedColor() => speed.color = GearColorsSelected[_player.EngineComponent.CurrentGear];
+    private void ChangeSpeedColor() { 
+        speed.color = GearColorsSelected[_player.EngineComponent.CurrentGear];
+        speed2.color = Color.white;
+        speedParent.color = _gearColors[_player.EngineComponent.CurrentGear];
+    }
     
 
     void Update()
@@ -114,7 +121,7 @@ public class GUIHandler : MonoBehaviour
 
     void UpdateSpeed() {
         speed.fillAmount = _player.EngineComponent.SpeedPercentage;
-
+        speed2.fillAmount = Mathf.Lerp(speed2.fillAmount, _player.EngineComponent.SpeedPercentage, 0.2f);
     }
 
     void UpdateAcceleration() {
