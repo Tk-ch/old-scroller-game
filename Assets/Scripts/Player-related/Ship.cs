@@ -20,10 +20,17 @@ public class Ship : MonoBehaviour
     Player PlayerComponent => _player ?? (_player = gameObject.GetComponent<Player>());
 
 
-   
-    public bool IsRolling { get; set; }
+    private bool _isRolling;
+    public bool IsRolling {
+        get { return _isRolling; }
+        set {
+            _isRolling = value;
+            OnRollChanged?.Invoke();
+        } }
     public float HorizontalInput { get; set; }
     
+    public event Action OnRollChanged; 
+
     public void Roll() {
         if (!IsRolling)
         {
