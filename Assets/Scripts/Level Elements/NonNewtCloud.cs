@@ -8,11 +8,11 @@ using UnityEngine;
 /// </summary>
 public class NonNewtCloud : FieldObstacle
 {
-    private long shift;
+    private long gear;
 
     private new void Start()
     {
-        Color c = game.player.shiftColors[(int)shift] * 2;
+        Color c = game.UIhandler._gearColors[(int)gear] * 2;
         c.a = 0.5f;
         GetComponent<SpriteRenderer>().color = c;
         game.UIhandler.SetWarning(c, 5f);
@@ -23,8 +23,9 @@ public class NonNewtCloud : FieldObstacle
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (!collision.CompareTag("Player")) return;
-        if (game.player.CurrentShift > shift) {
-            game.player.TakeDamage((int) damage, (int) shiftDamage);
+        if (game.player.EngineComponent.CurrentGear > gear) {
+            game.player.EngineComponent.CurrentGear -= (int)gearDamage;
+            game.player.ArmorComponent.HP -= (int)damage;
         }
     }
 

@@ -6,16 +6,17 @@ using UnityEngine;
 // Such as meteors, asteroids, comets, etc.
 public class ObjectObstacle : Obstacle
 {
-    [SerializeField] float rotationSpeed = 0;
-    [SerializeField] float relativeSpeed = 0;
-    [SerializeField] float obstacleHP = 1;
-
+    [SerializeField] protected float rotationSpeed = 0;
+    [SerializeField] protected float relativeSpeed = 0;
+    [SerializeField] protected float obstacleHP = 1;
+    [SerializeField] protected bool canBeDestroyedByHit = true;
+    [SerializeField] protected bool canBeDestroyedByShip = true;
     public float ObstacleHP
     { 
         get => obstacleHP; 
         set 
         {
-            if (value <= 0) Destroy(gameObject);
+            if (value <= 0 && canBeDestroyedByHit) Destroy(gameObject);
             obstacleHP = value;
         } 
     }
@@ -30,7 +31,8 @@ public class ObjectObstacle : Obstacle
     protected void OnTriggerEnter2D(Collider2D collision)
     {
         if (!collision.CompareTag("Player")) return;
-        game.player.TakeDamage((int)damage, (int)shiftDamage);
-        Destroy(gameObject);
+        game.player.EngineComponent.CurrentGear -= (int) gearDamage;
+        game.player.ArmorComponent.HP -= (int) damage;
+        if (canBeDestroyedByShip) Destroy(gameObject);
     }
 }
