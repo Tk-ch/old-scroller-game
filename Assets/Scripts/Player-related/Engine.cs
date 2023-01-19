@@ -47,9 +47,10 @@ public class Engine : MonoBehaviour
                 OnPerfectSwitch?.Invoke();
                 _perfectSwitch = false;
             }
+            int diff = _currentGear - newGear;
             _currentGear = newGear;
             OnGearChanged?.Invoke();
-            
+            if (diff > 0) OnGearDecreased?.Invoke();
         }
     }
     public float Acceleration
@@ -83,6 +84,7 @@ public class Engine : MonoBehaviour
 
     public event Action OnGearChanged;
     public event Action OnPerfectSwitch;
+    public event Action OnGearDecreased;
 
     // Decreases gear by one if correct gear is lower than current gear
     public bool DecreaseGearBySpeed() {

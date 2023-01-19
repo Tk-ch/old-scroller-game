@@ -8,6 +8,8 @@ public class ShipAnimator : MonoBehaviour
     [SerializeField] float _decelerationShowTimeInSeconds;
     [SerializeField] SpriteRenderer _thruster;
     [SerializeField] Player _player;
+    [SerializeField] float _horizontalRotationMultiplier;
+     
     public void ShowDeceleration()
     {
         _deceleration.SetActive(true);
@@ -23,6 +25,8 @@ public class ShipAnimator : MonoBehaviour
     private void Start()
     {
         _player.EngineComponent.OnGearChanged += UpdateThruster;
+        _player.EngineComponent.OnGearDecreased += ShowDeceleration;
+
     }
     void UpdateThruster()
     {
@@ -36,7 +40,7 @@ public class ShipAnimator : MonoBehaviour
         }
         else
         {
-            transform.rotation = Quaternion.identity;
+            transform.rotation = Quaternion.identity * Quaternion.Euler(new Vector3(0, _player.ShipComponent.HorizontalInput * _horizontalRotationMultiplier));
         }
         _thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Clamp01(Mathf.Lerp(_thruster.material.GetFloat("_tValue"), _player.EngineComponent.SpeedPercentage, 0.5f)) + 0.1f, 2));
     }
