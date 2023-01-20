@@ -50,7 +50,7 @@ Shader "Unlit/Roadshader"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                
+
                 fixed4 col = fixed4(clamp(abs(i.uv.xxx - 0.5) - (1 - 0.5 - _Width), 0, 1) * (_RoadColor * _Strength), 1);
                
                 return col;
