@@ -9,6 +9,8 @@ public class Armor : MonoBehaviour
 {
 
     [SerializeField] private int[] _gearHPs;
+    [SerializeField] private float _invulnerabilityTime;
+
 
     public int[] GearHPs { get => _gearHPs; }
 
@@ -18,23 +20,45 @@ public class Armor : MonoBehaviour
     public int HP 
     { 
         get => _hp;
-        set 
+        set
         {
+            int newHP = value;
+            if (!IsVulnerable) newHP = Mathf.Max(newHP, 0);
             int index = Mathf.Max(0, _cumulativeGearHPs.Length - 1);
 
-            int dif = value - _hp;
-            _hp = Mathf.Clamp(value, 0, _cumulativeGearHPs[index]);
+            int dif = newHP - _hp;
+            _hp = Mathf.Clamp(newHP, 0, _cumulativeGearHPs[index]);
             if (dif < 0) { OnHPDecreased?.Invoke();  }
             OnHPChanged?.Invoke();
         } 
     }
 
+
+
+    private bool _isVulnerable = true;
+    public bool IsVulnerable { get => _isVulnerable; set { 
+            _isVulnerable = value;
+            OnVulnerabilityChanged?.Invoke();
+        } }
+
+
     public event Action OnHPChanged;
     public event Action OnHPDecreased;
+    public event Action OnVulnerabilityChanged;
 
     private void Start()
     {
         GenerateCumulativeHPs();
+        OnHPDecreased += AddInvulnerability;
+    }
+
+    private void AddInvulnerability() {
+        IsVulnerable = false;
+        StartCoroutine(Utility.ExecuteAfterTime(ResetVulnerability, _invulnerabilityTime));
+    }
+
+    private void ResetVulnerability() {
+        IsVulnerable = true;
     }
 
     private void GenerateCumulativeHPs()

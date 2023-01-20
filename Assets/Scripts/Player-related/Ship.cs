@@ -27,6 +27,7 @@ public class Ship : MonoBehaviour
             _isRolling = value;
             OnRollChanged?.Invoke();
         } }
+
     public float HorizontalInput { get; set; }
     
     public event Action OnRollChanged; 

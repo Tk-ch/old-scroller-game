@@ -28,11 +28,16 @@ public class ObjectObstacle : Obstacle
         base.FixedUpdate();
     }
 
-    protected void OnTriggerEnter2D(Collider2D collision)
+    protected void OnTriggerEnter2D(Collider2D collision) => Check(collision);
+    protected void OnTriggerStay2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Player")) return;
-        game.player.EngineComponent.CurrentGear -= (int) gearDamage;
-        game.player.ArmorComponent.HP -= (int) damage;
+        Check(collision);
+    }
+
+    void Check(Collider2D collision) {
+        if (!collision.CompareTag("Player") || !game.player.ArmorComponent.IsVulnerable) return;
+        game.player.EngineComponent.CurrentGear -= (int)gearDamage;
+        game.player.ArmorComponent.HP -= (int)damage;
         if (canBeDestroyedByShip) Destroy(gameObject);
     }
 }
