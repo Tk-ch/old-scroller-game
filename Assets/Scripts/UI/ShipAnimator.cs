@@ -8,7 +8,6 @@ public class ShipAnimator : MonoBehaviour
     [SerializeField] SpriteRenderer _thruster;
     [SerializeField] Player _player;
     [SerializeField] float _horizontalRotationMultiplier;
-
     [SerializeField] float _blinkTime;
 
     public void ShowDeceleration()
