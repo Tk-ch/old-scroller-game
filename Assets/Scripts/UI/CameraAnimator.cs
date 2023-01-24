@@ -20,8 +20,8 @@ namespace Nebuloic
 
         private void Update()
         {
-            float accelerationInfluence = Mathf.Lerp(-2, 0, Mathf.InverseLerp(0, 2, player.EngineComponent.CurrentAcceleration));
-            float speedInfluence = Mathf.Lerp(0, -1, Mathf.Pow(Mathf.InverseLerp(3, 25, player.EngineComponent.CurrentSpeed), 0.3f));
+            float accelerationInfluence = Mathf.Lerp(-2, 0, Mathf.InverseLerp(0, 2, player.EngineComponent.Engine.CurrentAcceleration));
+            float speedInfluence = Mathf.Lerp(0, -1, Mathf.Pow(Mathf.InverseLerp(3, 25, player.EngineComponent.Engine.CurrentSpeed), 0.3f));
             Vector2 cameraCoord = new Vector2(0, -(accelerationInfluence + speedInfluence));
             transform.position = Vector3.Lerp(transform.position, new Vector3(cameraCoord.x, cameraCoord.y, -10), 0.1f);
         }

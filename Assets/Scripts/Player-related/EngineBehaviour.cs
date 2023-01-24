@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// Component to manage ship's gears - the main point is to calculate acceleration and speed here and then use it in Ship class. 
@@ -8,128 +9,51 @@ namespace Nebuloic
 {
     public class EngineBehaviour : MonoBehaviour
     {
-        [SerializeField] float[] _gearSpeeds;
-        [SerializeField] float _minimumSpeed;
+        [SerializeField] private Engine _engine;
 
-        [SerializeField] float _accelerationModifier;
-        [SerializeField] float _accelerationChangeSpeed = 0.1f;
+        public Engine Engine { get => _engine; }
 
-        [SerializeField] float _perfectSwitchTiming;
-        [SerializeField] float _perfectSwitchBoost;
+        public UnityEvent<int, int> EngineGearChanged;
+        public UnityEvent EnginePerfectSwitched;
+        public UnityEvent<bool> EnginePerfectSwitchChanged;
 
-        private float _currentSpeed;
-        private int _currentGear = 0;
-        private ArmorBehaviour _armorComponent;
-        private bool _perfectSwitch;
+        private EventHandler<int> GearHandler;
+        private Action PerfectSwitchHandler;
+        private EventHandler<bool> PerfectSwitchChangeHandler;
 
-        ArmorBehaviour ArmorComponent => _armorComponent ?? (_armorComponent = GetComponent<ArmorBehaviour>());
 
-        public float CurrentSpeed
+
+        private void Awake()
         {
-            get => _currentSpeed;
-            set => _currentSpeed = Mathf.Clamp(value, _minimumSpeed, CurrentGearSpeed);
-        }
-        public float SpeedPercentage
-        {
-            get
-            {
-                float speedDifference = CurrentGear == 0 ? _minimumSpeed : _gearSpeeds[CurrentGear - 1];
-                return (CurrentSpeed - speedDifference) / (CurrentGearSpeed - speedDifference);
-            }
-        }
+            Engine.Init(GetComponent<ArmorBehaviour>().Armor);
+            Engine.PerfectSwitchChanged += ResetPerfectSwitch;
 
-        public int CurrentGear
-        {  // Clamped between 0 and gear number
-            get => _currentGear;
-            set
-            {
-                int newGear = Mathf.Clamp(value, 0, _gearSpeeds.Length - 1);
-                while (!ArmorComponent.Armor.CheckGearHP(newGear) && newGear > 0) newGear--;
-                if (_perfectSwitch && newGear > _currentGear)
-                {
-                    CurrentAcceleration += _perfectSwitchBoost;
-                    OnPerfectSwitch?.Invoke();
-                    _perfectSwitch = false;
-                }
-                int diff = _currentGear - newGear;
-                _currentGear = newGear;
-                OnGearChanged?.Invoke();
-                if (diff > 0) OnGearDecreased?.Invoke();
-            }
-        }
-        public float Acceleration
-        {
-            get
-            {
-                if (Mathf.Abs(CurrentGearSpeed - CurrentSpeed) < 0.05f) return 0;
-                return (CurrentGear == CorrectGear) ? _accelerationModifier : _accelerationModifier / (1 + Mathf.Abs(CurrentGear - CorrectGear));
-            }
-        }
-        public int CorrectGear
-        {
-            get
-            {
-                if (CurrentSpeed < _gearSpeeds[0]) return 0;
-                for (int i = 0; i < _gearSpeeds.Length - 2; i++)
-                {
-                    if (_gearSpeeds[i] < CurrentSpeed && _gearSpeeds[i + 1] > CurrentSpeed)
-                    {
-                        return i + 1;
-                    }
-                }
-                return CurrentGear;
-            }
-        }
-        public float CurrentAcceleration { get; set; } = 0;
+            GearHandler = (object eng, int gear) => EngineGearChanged?.Invoke(((Engine) eng).CurrentGear, gear);
+            PerfectSwitchHandler = () => EnginePerfectSwitched?.Invoke();
+            PerfectSwitchChangeHandler = (object _, bool ps) => EnginePerfectSwitchChanged?.Invoke(ps);
 
-        public float CurrentGearSpeed { get => _gearSpeeds[CurrentGear]; }
-        public float CorrectGearSpeed { get => _gearSpeeds[CorrectGear]; }
-        public float AccelerationPercentage { get => CurrentAcceleration / _accelerationModifier; }
+            Engine.GearChanged += GearHandler;
+            Engine.PerfectSwitched += PerfectSwitchHandler;
+            Engine.PerfectSwitchChanged += PerfectSwitchChangeHandler;
 
-        public event Action OnGearChanged;
-        public event Action OnPerfectSwitch;
-        public event Action OnGearDecreased;
-
-        // Decreases gear by one if correct gear is lower than current gear
-        public bool DecreaseGearBySpeed()
-        {
-            if (CorrectGear >= CurrentGear) return false;
-            CurrentGear--;
-            return true;
-        }
-
-        // Checks if ship can shoot at current speed
-        public bool CanShoot(float speedReduction)
-        {
-            return CurrentSpeed - _minimumSpeed >= speedReduction;
         }
 
         private void Start()
         {
-            OnGearChanged?.Invoke();
-            ArmorComponent.ArmorHPChanged.AddListener(RecheckGears);
-        }
-
-        private void RecheckGears(int _) // this should be re-done
-        {
-            if (!ArmorComponent.Armor.CheckGearHP(CurrentGear)) CurrentGear--;
+            EngineGearChanged?.Invoke(0, 0);
         }
 
         private void FixedUpdate()
         {
-            CurrentAcceleration = Mathf.Lerp(CurrentAcceleration, Acceleration, _accelerationChangeSpeed * Time.fixedDeltaTime);
-            CurrentSpeed += CurrentAcceleration * Time.fixedDeltaTime;
-
-            if (Mathf.Abs(CurrentSpeed - CorrectGearSpeed) < 0.05f)
-            {
-                _perfectSwitch = true;
-                StartCoroutine(Utility.ExecuteAfterTime(ResetPerfectSwitch, _perfectSwitchTiming));
-            }
+            Engine.UpdateEngine(Time.fixedDeltaTime);
         }
 
-        private void ResetPerfectSwitch()
+
+
+        private void ResetPerfectSwitch(object _, bool ps)
         {
-            _perfectSwitch = false;
+            if (!ps) return; 
+            StartCoroutine(Utility.ExecuteAfterTime (() => Engine.PerfectSwitch = false, Engine.PerfectSwitchTiming));
         }
     }
 }

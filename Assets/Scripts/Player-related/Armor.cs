@@ -11,12 +11,13 @@ namespace Nebuloic
     public class Armor : ScriptableObject
     {
         [SerializeField] private int[] _gearHPs;
-
+        [SerializeField] float _invulnerabilityTime;
 
         private int[] _cumulativeGearHPs;
         private int _hp;
 
         public int[] GearHPs { get => _gearHPs; }
+        public float InvulnerabilityTime { get => _invulnerabilityTime; }
 
         public int HP
         {
@@ -45,6 +46,17 @@ namespace Nebuloic
 
         public event EventHandler<int> HPChanged;
         public event EventHandler<bool> VulnerabilityChanged;
+
+        public int MaxGear {
+            get {
+                if (HP < _cumulativeGearHPs[0]) return 0;
+                for (int i = 1; i <= _cumulativeGearHPs.Length; i++)
+                {
+                    if (HP <= _cumulativeGearHPs[i - 1] + 1) return i;
+                }
+                return _cumulativeGearHPs.Length - 1;
+            }
+        }
 
 
         public Armor(int[] gearHPs) // constructor for the tests 

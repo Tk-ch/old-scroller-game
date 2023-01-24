@@ -28,7 +28,7 @@ public class BoostOrHeal : ObjectObstacle
         if (!collision.CompareTag("Player")) return;
         if (game.player.ShipComponent.IsRolling)
         {
-            game.player.EngineComponent.CurrentAcceleration += accelerationBoost;
+            game.player.EngineComponent.Engine.CurrentAcceleration += accelerationBoost;
         }
         else {
             game.player.ArmorComponent.Armor.HP -= (int)damage;

@@ -22,6 +22,7 @@ Shader "Unlit/BGScroll"
 
         Pass
         {
+            Blend One One
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag

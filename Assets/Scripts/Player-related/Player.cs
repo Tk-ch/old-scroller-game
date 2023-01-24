@@ -50,7 +50,7 @@ public class Player : MonoBehaviour
         }
         if (Input.GetButtonDown("ShiftUp"))
         {
-            EngineComponent.CurrentGear += 1;
+            EngineComponent.Engine.CurrentGear += 1;
         }  
     }
 
@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
 
     IEnumerator StopHoldDown() {
         yield return new WaitForSeconds(holdDownTimeInSeconds);
-        EngineComponent.CurrentGear -= 1;
+        EngineComponent.Engine.CurrentGear -= 1;
         _stopHoldDownCoro = StartCoroutine(StopHoldDown());
     }
 

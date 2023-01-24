@@ -42,11 +42,11 @@ public class Ship : MonoBehaviour
 
     public bool Shoot()
     {
-        if (!PlayerComponent.EngineComponent.CanShoot(_bulletPrefab.GetComponent<Projectile>().SpeedReduction)) return false;
+        if (!PlayerComponent.EngineComponent.Engine.CanShoot(_bulletPrefab.GetComponent<Projectile>().SpeedReduction)) return false;
         GameObject bullet = Instantiate(_bulletPrefab, transform.position, Quaternion.identity);
         bullet.GetComponent<Rigidbody2D>().AddForce(Vector2.up * _bulletSpeed);
-        PlayerComponent.EngineComponent.CurrentSpeed -= bullet.GetComponent<Projectile>().SpeedReduction;
-        return PlayerComponent.EngineComponent.DecreaseGearBySpeed();
+        PlayerComponent.EngineComponent.Engine.CurrentSpeed -= bullet.GetComponent<Projectile>().SpeedReduction;
+        return PlayerComponent.EngineComponent.Engine.DecreaseGearBySpeed();
     }
 
     private void FixedUpdate()

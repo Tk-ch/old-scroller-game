@@ -60,7 +60,6 @@ namespace Nebuloic
         private void Start()
         {
             _player.ArmorComponent.ArmorHPChanged.AddListener(OnHPChanged);
-            _player.EngineComponent.OnGearChanged += OnGearChanged;
             CreateGears();
         }
         /// <summary>
@@ -97,11 +96,11 @@ namespace Nebuloic
         /// <summary>
         /// Updates the current shift with a color
         /// </summary>
-        private void OnGearChanged()
+        public void OnGearChanged(int gear, int _)
         {
             for (int i = 0; i < gears.Count; i++)
             {
-                gears[i].SelectGear(i == _player.EngineComponent.CurrentGear);
+                gears[i].SelectGear(i == gear);
             }
             speed.color = Color.white;
             StartCoroutine(Utility.ExecuteAfterTime(ChangeSpeedColor, 0.07f));
@@ -110,9 +109,9 @@ namespace Nebuloic
 
         private void ChangeSpeedColor()
         {
-            speed.color = GearColorsSelected[_player.EngineComponent.CurrentGear];
+            speed.color = GearColorsSelected[_player.EngineComponent.Engine.CurrentGear];
             speed2.color = Color.white;
-            speedParent.color = _gearColors[_player.EngineComponent.CurrentGear];
+            speedParent.color = _gearColors[_player.EngineComponent.Engine.CurrentGear];
         }
 
 
@@ -127,14 +126,14 @@ namespace Nebuloic
 
         void UpdateSpeed()
         {
-            speed.fillAmount = _player.EngineComponent.SpeedPercentage;
-            speed2.fillAmount = Mathf.Lerp(speed2.fillAmount, _player.EngineComponent.SpeedPercentage, 0.2f);
+            speed.fillAmount = _player.EngineComponent.Engine.SpeedPercentage;
+            speed2.fillAmount = Mathf.Lerp(speed2.fillAmount, _player.EngineComponent.Engine.SpeedPercentage, 0.2f);
         }
 
         void UpdateAcceleration()
         {
-            accel.fillAmount = Mathf.Sqrt(_player.EngineComponent.AccelerationPercentage);
-            accel2.fillAmount = _player.EngineComponent.AccelerationPercentage - 1;
+            accel.fillAmount = Mathf.Sqrt(_player.EngineComponent.Engine.AccelerationPercentage);
+            accel2.fillAmount = _player.EngineComponent.Engine.AccelerationPercentage - 1;
         }
 
         public void ShowFinishGame(string text)

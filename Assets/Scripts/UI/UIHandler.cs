@@ -16,14 +16,14 @@ namespace Assets.Scripts.UI
         private void Update()
         {
             var velocity = Stars.velocityOverLifetime;
-            velocity.speedModifierMultiplier = PlayerComponent.EngineComponent.CurrentSpeed;
+            velocity.speedModifierMultiplier = PlayerComponent.EngineComponent.Engine.CurrentSpeed;
 
             velocity = Thruster.velocityOverLifetime;
-            velocity.speedModifierMultiplier = PlayerComponent.EngineComponent.CurrentSpeed;
+            velocity.speedModifierMultiplier = PlayerComponent.EngineComponent.Engine.CurrentSpeed;
             var m = Thruster.main;
-            m.startColor = guiHandler.GearColorsSelected[PlayerComponent.EngineComponent.CurrentGear];
+            m.startColor = guiHandler.GearColorsSelected[PlayerComponent.EngineComponent.Engine.CurrentGear];
             var emission = Thruster.emission;
-            emission.rateOverTimeMultiplier = PlayerComponent.EngineComponent.SpeedPercentage * 20;
+            emission.rateOverTimeMultiplier = PlayerComponent.EngineComponent.Engine.SpeedPercentage * 20;
         }
 
     }

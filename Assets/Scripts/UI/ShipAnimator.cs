@@ -10,8 +10,9 @@ public class ShipAnimator : MonoBehaviour
     [SerializeField] float _horizontalRotationMultiplier;
     [SerializeField] float _blinkTime;
 
-    public void ShowDeceleration()
+    public void ShowDeceleration(int _, int damage)
     {
+        if (damage <= 0) return;
         _deceleration.SetActive(true);
         StartCoroutine(HideDeceleration());
     }
@@ -24,13 +25,6 @@ public class ShipAnimator : MonoBehaviour
 
     private void Start()
     {
-        _player.EngineComponent.OnGearChanged += UpdateThruster;
-        _player.EngineComponent.OnGearDecreased += ShowDeceleration;
-        
-
-        UpdateThruster();
-    
-    
     }
 
     public void UpdateVulnerability(bool vuln) {
@@ -61,9 +55,9 @@ public class ShipAnimator : MonoBehaviour
     
     
 
-    void UpdateThruster()
+    public void UpdateThruster(int gear, int _)
     {
-        _thruster.material.SetColor("_Color", _player.guiHandler.GearColorsSelected[_player.EngineComponent.CurrentGear]);
+        _thruster.material.SetColor("_Color", _player.guiHandler.GearColorsSelected[gear]);
     }
 
     private void Update()
@@ -76,6 +70,6 @@ public class ShipAnimator : MonoBehaviour
         {
             transform.rotation = Quaternion.identity * Quaternion.Euler(new Vector3(0, _player.ShipComponent.HorizontalInput * _horizontalRotationMultiplier));
         }
-        _thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Clamp01(Mathf.Lerp(_thruster.material.GetFloat("_tValue"), _player.EngineComponent.SpeedPercentage, 0.5f)) + 0.1f, 2));
+        _thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Clamp01(Mathf.Lerp(_thruster.material.GetFloat("_tValue"), _player.EngineComponent.Engine.SpeedPercentage, 0.5f)) + 0.1f, 2));
     }
 }
