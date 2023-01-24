@@ -17,7 +17,7 @@ public class Heal : ObjectObstacle
         if (!collision.CompareTag("Player")) return;
         if (!game.player.ShipComponent.IsRolling) return;
         game.player.EngineComponent.CurrentGear -= (int)gearDamage;
-        game.player.ArmorComponent.HP -= (int)damage;
+        game.player.ArmorComponent.Armor.HP -= (int)damage;
         if (canBeDestroyedByShip) Destroy(gameObject);
     }
 }

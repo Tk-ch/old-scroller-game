@@ -35,9 +35,9 @@ public class ObjectObstacle : Obstacle
     }
 
     void Check(Collider2D collision) {
-        if (!collision.CompareTag("Player") || !game.player.ArmorComponent.IsVulnerable) return;
+        if (!collision.CompareTag("Player") || !game.player.ArmorComponent.Armor.IsVulnerable) return;
         game.player.EngineComponent.CurrentGear -= (int)gearDamage;
-        game.player.ArmorComponent.HP -= (int)damage;
+        game.player.ArmorComponent.Armor.HP -= (int)damage;
         if (canBeDestroyedByShip) Destroy(gameObject);
     }
 }

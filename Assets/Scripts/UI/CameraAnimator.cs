@@ -1,24 +1,28 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class CameraAnimator : MonoBehaviour
+namespace Nebuloic
 {
-    [SerializeField] Player player;
-
-    private void Start()
+    public class CameraAnimator : MonoBehaviour
     {
-        player.ArmorComponent.OnHPDecreased += ShakeCamera;
-    }
+        [SerializeField] Player player;
 
-    public void ShakeCamera() {
-        transform.position += new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
-    }
+        private void Start()
+        {
+            player.ArmorComponent.ArmorHPChanged.AddListener(ShakeCamera);
+        }
 
-    private void Update()
-    {
-        float accelerationInfluence = Mathf.Lerp(-2, 0, Mathf.InverseLerp(0, 2, player.EngineComponent.CurrentAcceleration));
-        float speedInfluence = Mathf.Lerp(0, -1, Mathf.Pow(Mathf.InverseLerp(3, 25, player.EngineComponent.CurrentSpeed), 0.3f));
-        Vector2 cameraCoord = new Vector2(0, -(accelerationInfluence + speedInfluence));
-        transform.position = Vector3.Lerp(transform.position, new Vector3(cameraCoord.x, cameraCoord.y, -10), 0.1f);
+        public void ShakeCamera(int _)
+        {
+            transform.position += new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+        }
+
+        private void Update()
+        {
+            float accelerationInfluence = Mathf.Lerp(-2, 0, Mathf.InverseLerp(0, 2, player.EngineComponent.CurrentAcceleration));
+            float speedInfluence = Mathf.Lerp(0, -1, Mathf.Pow(Mathf.InverseLerp(3, 25, player.EngineComponent.CurrentSpeed), 0.3f));
+            Vector2 cameraCoord = new Vector2(0, -(accelerationInfluence + speedInfluence));
+            transform.position = Vector3.Lerp(transform.position, new Vector3(cameraCoord.x, cameraCoord.y, -10), 0.1f);
+        }
     }
 }

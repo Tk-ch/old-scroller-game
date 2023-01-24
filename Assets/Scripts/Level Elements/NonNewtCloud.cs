@@ -25,7 +25,7 @@ public class NonNewtCloud : FieldObstacle
         if (!collision.CompareTag("Player")) return;
         if (game.player.EngineComponent.CurrentGear > gear) {
             game.player.EngineComponent.CurrentGear -= (int)gearDamage;
-            game.player.ArmorComponent.HP -= (int)damage;
+            game.player.ArmorComponent.Armor.HP -= (int)damage;
         }
     }
 

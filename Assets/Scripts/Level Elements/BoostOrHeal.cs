@@ -31,7 +31,7 @@ public class BoostOrHeal : ObjectObstacle
             game.player.EngineComponent.CurrentAcceleration += accelerationBoost;
         }
         else {
-            game.player.ArmorComponent.HP -= (int)damage;
+            game.player.ArmorComponent.Armor.HP -= (int)damage;
         }
         if (canBeDestroyedByHit) {
 

@@ -1,76 +1,53 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 
 namespace Nebuloic
 {
 
     /// <summary>
-    /// Component to manage ship's HP and check whether the shift can be increased. 
+    /// Class to manage ship's HP and check whether the shift can be increased. 
     /// </summary>
-    public class Armor : MonoBehaviour
+    [CreateAssetMenu(fileName = "Armor", menuName = "Scribptable Objects/Armor", order = 1)]
+    public class Armor : ScriptableObject
     {
-
         [SerializeField] private int[] _gearHPs;
-        [SerializeField] private float _invulnerabilityTime;
 
-
-        public int[] GearHPs { get => _gearHPs; }
+        public Armor(int[] gearHPs) { // constructor for the tests 
+            _gearHPs = gearHPs;
+        }
 
         private int[] _cumulativeGearHPs;
         private int _hp;
+
+        public int[] GearHPs { get => _gearHPs; }
 
         public int HP
         {
             get => _hp;
             set
             {
-                int newHP = value;
-                if (!IsVulnerable) newHP = Mathf.Max(newHP, 0);
-                int index = Mathf.Max(0, _cumulativeGearHPs.Length - 1);
-
-                int dif = newHP - _hp;
-                _hp = Mathf.Clamp(newHP, 0, _cumulativeGearHPs[index]);
-                if (dif < 0) { OnHPDecreased?.Invoke(); }
-                OnHPChanged?.Invoke();
+                if (_gearHPs.Length <= 0) return; //there's no point in setting HP when gearHPs are not initialized 
+                if (_hp == value) return; // why change hp and invoke events if there's no change
+                if (!IsVulnerable && value < _hp) return; // invulnerability setup 
+                _hp = Mathf.Clamp(value, 0, _cumulativeGearHPs[_cumulativeGearHPs.Length - 1]);
+                HPChanged?.Invoke(this, HP);
             }
         }
-
-
-
         private bool _isVulnerable = true;
         public bool IsVulnerable
         {
             get => _isVulnerable; set
             {
+                if (_isVulnerable == value) return;
                 _isVulnerable = value;
-                OnVulnerabilityChanged?.Invoke();
+                VulnerabilityChanged?.Invoke(this, value);
             }
         }
 
+        public event EventHandler<int> HPChanged;
+        public event EventHandler<bool> VulnerabilityChanged;
 
-        public event Action OnHPChanged;
-        public event Action OnHPDecreased;
-        public event Action OnVulnerabilityChanged;
-
-        private void Awake()
-        {
-            GenerateCumulativeHPs();
-            OnHPDecreased += AddInvulnerability;
-        }
-
-        private void AddInvulnerability()
-        {
-            IsVulnerable = false;
-            StartCoroutine(Utility.ExecuteAfterTime(ResetVulnerability, _invulnerabilityTime));
-        }
-
-        private void ResetVulnerability()
-        {
-            IsVulnerable = true;
-        }
-
-        private void GenerateCumulativeHPs()
+        public void GenerateCumulativeHPs()
         {
             _cumulativeGearHPs = new int[_gearHPs.Length];
             int sum = 0;
@@ -82,13 +59,6 @@ namespace Nebuloic
             HP = sum;
         }
 
-
-        /// <summary>
-        /// Method to check if the gear can be shifted to the input gear. 
-        /// It can only be done if the current HP of the armor is greater than the cumulative HP of the gear.
-        /// </summary>
-        /// <param name="gear">The gear index</param>
-        /// <returns>Whether the gear can be changed to the input gear</returns>
         public bool CheckGearHP(int gear)
         {
             gear = Mathf.Clamp(gear, 1, _cumulativeGearHPs.Length);

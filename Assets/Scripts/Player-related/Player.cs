@@ -8,13 +8,13 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private Ship _shipComponent;
-    private Engine _engineComponent;
-    private Armor _armorComponent;
+    private EngineBehaviour _engineComponent;
+    private ArmorBehaviour _armorComponent;
 
 
     public Ship ShipComponent => _shipComponent ?? (_shipComponent= GetComponent<Ship>());
-    public Engine EngineComponent => _engineComponent ?? (_engineComponent = GetComponent<Engine>());
-    public Armor ArmorComponent => _armorComponent ?? (_armorComponent = GetComponent<Armor>());
+    public EngineBehaviour EngineComponent => _engineComponent ?? (_engineComponent = GetComponent<EngineBehaviour>());
+    public ArmorBehaviour ArmorComponent => _armorComponent ?? (_armorComponent = GetComponent<ArmorBehaviour>());
 
     [SerializeField] float holdDownTimeInSeconds;
     [SerializeField] float repeatShootingInSeconds;

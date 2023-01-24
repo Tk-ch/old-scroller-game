@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using System;
+using Nebuloic;
 
 /// <summary>
 /// The main game class, attached to the camera
@@ -84,7 +85,7 @@ public class Game : MonoBehaviour
     }
 
     public void FinishGame() {
-        if (player.ArmorComponent.HP <= 0) {
+        if (player.ArmorComponent.Armor.HP <= 0) {
             UIhandler.ShowFinishGame("You died lol");
         } 
         else
