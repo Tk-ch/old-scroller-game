@@ -12,8 +12,9 @@ namespace Nebuloic
             player.ArmorComponent.ArmorHPChanged.AddListener(ShakeCamera);
         }
 
-        public void ShakeCamera(int _)
+        public void ShakeCamera(int damage)
         {
+            if (damage <= 0) return;
             transform.position += new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
         }
 

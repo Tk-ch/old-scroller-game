@@ -86,8 +86,9 @@ namespace Nebuloic
         /// <summary>
         /// Updates the HPs after taken damage/healed
         /// </summary>
-        private void OnHPChanged(int HPs)
+        private void OnHPChanged(int damage)
         {
+            int HPs = _player.ArmorComponent.Armor.HP;
             foreach (GearUI gear in gears)
             {
                 HPs -= gear.UpdateHPs(HPs);

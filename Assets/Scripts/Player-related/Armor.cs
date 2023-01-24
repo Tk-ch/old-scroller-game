@@ -12,9 +12,6 @@ namespace Nebuloic
     {
         [SerializeField] private int[] _gearHPs;
 
-        public Armor(int[] gearHPs) { // constructor for the tests 
-            _gearHPs = gearHPs;
-        }
 
         private int[] _cumulativeGearHPs;
         private int _hp;
@@ -29,14 +26,16 @@ namespace Nebuloic
                 if (_gearHPs.Length <= 0) return; //there's no point in setting HP when gearHPs are not initialized 
                 if (_hp == value) return; // why change hp and invoke events if there's no change
                 if (!IsVulnerable && value < _hp) return; // invulnerability setup 
+                int damage = _hp - value;
                 _hp = Mathf.Clamp(value, 0, _cumulativeGearHPs[_cumulativeGearHPs.Length - 1]);
-                HPChanged?.Invoke(this, HP);
+                HPChanged?.Invoke(this, damage);
             }
         }
         private bool _isVulnerable = true;
         public bool IsVulnerable
         {
-            get => _isVulnerable; set
+            get => _isVulnerable; 
+            set
             {
                 if (_isVulnerable == value) return;
                 _isVulnerable = value;
@@ -46,6 +45,25 @@ namespace Nebuloic
 
         public event EventHandler<int> HPChanged;
         public event EventHandler<bool> VulnerabilityChanged;
+
+
+        public Armor(int[] gearHPs) // constructor for the tests 
+        { 
+            _gearHPs = gearHPs;
+            Init();
+        }
+
+        public void Init() {
+            GenerateCumulativeHPs();
+            IsVulnerable = true;
+            HPChanged += AddInvulnerability;
+        }
+
+        private void AddInvulnerability(object _, int damage)
+        {
+            if (damage <= 0) return;
+            IsVulnerable = false;
+        }
 
         public void GenerateCumulativeHPs()
         {

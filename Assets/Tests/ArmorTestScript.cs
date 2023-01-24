@@ -14,7 +14,6 @@ public class ArmorTestScript
     public void Init()
     {
         armor = new Armor(new int[] { 1, 1, 2, 3, 5 });
-        armor.GenerateCumulativeHPs();
     }
 
     // HP testing

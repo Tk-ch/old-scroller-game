@@ -26,14 +26,14 @@ public class ShipAnimator : MonoBehaviour
     {
         _player.EngineComponent.OnGearChanged += UpdateThruster;
         _player.EngineComponent.OnGearDecreased += ShowDeceleration;
-        _player.ArmorComponent.ArmorVulnerabilityChanged.AddListener(UpdateVulnerability);
         
+
         UpdateThruster();
     
     
     }
 
-    void UpdateVulnerability(bool vuln) {
+    public void UpdateVulnerability(bool vuln) {
         if (!vuln) StartCoroutine(Utility.ExecuteAfterTime(Blink, _blinkTime));
         else SetShipAlpha(1);
         

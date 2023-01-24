@@ -9,32 +9,43 @@ namespace Nebuloic
     /// </summary>
     public class ArmorBehaviour : MonoBehaviour
     {
-        [SerializeField] Armor armor;
-        public Armor Armor { get => armor; }
+        [SerializeField] Armor _armor;
+        [SerializeField] float _invulnerabilityTime;
+        public Armor Armor { get => _armor; }
 
         private EventHandler<int> HPListener;
         private EventHandler<bool> VulnerabilityListener;
 
+        public UnityEvent<int> ArmorHPChanged;
+        public UnityEvent<bool> ArmorVulnerabilityChanged;
+
         private void Awake()
         {
-            armor.GenerateCumulativeHPs();
-
+            Armor.Init();
             // subscribing to armor events
-            HPListener = (object a, int hp) => ArmorHPChanged?.Invoke(hp);
-            VulnerabilityListener = (object a, bool vulnerability) => ArmorVulnerabilityChanged?.Invoke(vulnerability);
-            armor.HPChanged += HPListener;
-            armor.VulnerabilityChanged += VulnerabilityListener;
+            HPListener = (object e, int hp) => ArmorHPChanged?.Invoke(hp);
+            VulnerabilityListener = (object e, bool vulnerability) => ArmorVulnerabilityChanged?.Invoke(vulnerability);
+            Armor.HPChanged += HPListener;
+            Armor.VulnerabilityChanged += VulnerabilityListener;
+            Armor.VulnerabilityChanged += ResetVulnerability;
+        }
+
+        
+
+        private void ResetVulnerability(object _, bool vuln)
+        {
+            if (!vuln) {
+                StartCoroutine(Utility.ExecuteAfterTime(() => Armor.IsVulnerable = true, _invulnerabilityTime));
+            }
         }
 
         private void OnDestroy()
         {
             // unsubscribing from armor events
-            armor.HPChanged -= HPListener;
-            armor.VulnerabilityChanged -= VulnerabilityListener;
+            _armor.HPChanged -= HPListener;
+            _armor.VulnerabilityChanged -= VulnerabilityListener;
         }
         
-        public UnityEvent<int> ArmorHPChanged;
-        public UnityEvent<bool> ArmorVulnerabilityChanged;
 
     }
 }
