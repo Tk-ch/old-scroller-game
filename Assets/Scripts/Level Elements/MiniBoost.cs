@@ -8,7 +8,7 @@ public class MiniBoost : ObjectObstacle
     {
         Check(collision);
     }
-    void OnTriggerStay2D(Collider2D collision)
+    new void OnTriggerStay2D(Collider2D collision)
     {
         Check(collision);
     }

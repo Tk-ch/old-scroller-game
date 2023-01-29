@@ -4,16 +4,15 @@ using UnityEngine;
 
 namespace Nebuloic
 {
-    public class ShipLogic 
+    public class ShipLogic
     {
-
         private readonly ArmorLogic _armorLogic;
         private readonly EngineLogic _engineLogic;
 
-        public EngineLogic Engine => _engineLogic;
-        public ArmorLogic Armor => _armorLogic;
+        public EngineLogic Engine { get => _engineLogic;}
+        public ArmorLogic Armor { get => _armorLogic; }
 
-        public event Action OnRollChanged;
+        public event Action<bool> OnRollChanged;
 
         private readonly float _rollDurationInSeconds;
         private Timer rollingTimer;
@@ -24,8 +23,9 @@ namespace Nebuloic
             get { return _isRolling; }
             set
             {
+                if (_isRolling == value) return;
                 _isRolling = value;
-                OnRollChanged?.Invoke();
+                OnRollChanged?.Invoke(value);
             }
         }
 
@@ -40,15 +40,15 @@ namespace Nebuloic
         }
         void ResetRoll() => IsRolling = false;
 
-        public ShipLogic( ShipData _data, float rollDurationInSeconds) {
+        public ShipLogic( ShipData _data, float rollDurationInSeconds, float perfectSwitchTiming) {
             _rollDurationInSeconds = rollDurationInSeconds;
             _armorLogic = new ArmorLogic(_data.ArmorData);
-            _engineLogic = new EngineLogic(_data, _armorLogic);
+            _engineLogic = new EngineLogic(_data, _armorLogic, perfectSwitchTiming);
         }
 
 
         public void Update(float deltaTime) { 
-            if (rollingTimer != null) rollingTimer.UpdateTimer(deltaTime); 
+            if (rollingTimer != null) rollingTimer.Update(deltaTime); 
             _armorLogic.Update(deltaTime);
             _engineLogic.Update(deltaTime);
         }

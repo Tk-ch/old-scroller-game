@@ -7,12 +7,7 @@ namespace Nebuloic
     {
         [SerializeField] ShipBehaviour ship;
 
-        private void Start()
-        {
-            ship.ArmorHPChanged.AddListener(ShakeCamera);
-        }
-
-        public void ShakeCamera(int damage)
+        public void ShakeCamera(int _, int damage)
         {
             if (damage <= 0) return;
             transform.position += new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f));

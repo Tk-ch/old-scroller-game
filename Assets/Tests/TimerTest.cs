@@ -15,7 +15,7 @@ public class TimerTest
         Timer t = new Timer(1);
         t.OnTimerEnd += () => isDone = true;
         Assert.IsFalse(isDone);
-        t.UpdateTimer(2);
+        t.Update(2);
         Assert.IsTrue(isDone);
     }
 

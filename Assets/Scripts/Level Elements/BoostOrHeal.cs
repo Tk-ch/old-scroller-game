@@ -14,8 +14,8 @@ public class BoostOrHeal : ObjectObstacle
         game.Ship.OnRollChanged += UpdateColor;
     }
 
-    private void UpdateColor() {
-        GetComponent<SpriteRenderer>().color = game.Ship.IsRolling ? boostColor : healColor;
+    private void UpdateColor(bool isRolling) {
+        GetComponent<SpriteRenderer>().color = isRolling ? boostColor : healColor;
     }
 
     new void OnTriggerEnter2D(Collider2D collision)

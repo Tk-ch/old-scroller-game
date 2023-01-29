@@ -609,7 +609,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1304425543}
-  - {fileID: 884301211}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -625,7 +624,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de37307e3cae124439a612697c9b6559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1058953424}
+  shipBehaviour: {fileID: 1058953430}
   background: {fileID: 1304425539}
   levelName: 0004
   obstacleParent: {fileID: 659116041}
@@ -644,7 +643,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e02753dd2977b664ca78b57d2dae59c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1058953424}
+  ship: {fileID: 1058953430}
 --- !u!1 &612124725
 GameObject:
   m_ObjectHideFlags: 0
@@ -833,7 +832,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &673141507
 GameObject:
@@ -1148,43 +1147,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0.00012207031, y: 0.000061035156}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!84 &782332047
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 1280
-  m_Height: 960
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 90
-  m_ColorFormat: 6
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 0
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &884301210
 GameObject:
   m_ObjectHideFlags: 0
@@ -1211,12 +1173,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 884301210}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.62, y: -3.5, z: 31.11}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 6.62, y: -3.5, z: 21.11}
   m_LocalScale: {x: 41.28677, y: 22.252878, z: 2.0912}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 519420032}
+  m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &884301212
@@ -1384,7 +1346,7 @@ RectTransform:
   - {fileID: 1930948462}
   - {fileID: 480472785}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1403,7 +1365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b44bdddeb6c60a4798d8a8062de33ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _player: {fileID: 1058953424}
+  _ship: {fileID: 1058953430}
   _gearColors:
   - {r: 0.3372549, g: 0, b: 0.18431373, a: 1}
   - {r: 0.85490197, g: 0.3529412, b: 0, a: 1}
@@ -1524,7 +1486,7 @@ Transform:
   - {fileID: 6698095}
   - {fileID: 1776484926}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1058953421
 BoxCollider2D:
@@ -1603,7 +1565,7 @@ MonoBehaviour:
   _deceleration: {fileID: 6698093}
   _decelerationShowTimeInSeconds: 0.5
   _thruster: {fileID: 756903249}
-  _player: {fileID: 1058953424}
+  _ship: {fileID: 1058953430}
   _horizontalRotationMultiplier: 40
   _blinkTime: 0.04
 --- !u!114 &1058953429
@@ -1640,7 +1602,132 @@ MonoBehaviour:
   _horizontalRollLimits: 3.5
   _rollDurationInSeconds: 0.5
   _bulletPrefab: {fileID: 1673778596101900801, guid: e8c42300aad722b49b1e6a56924331de, type: 3}
-  _bulletSpeed: 2
+  _bulletSpeed: 0.1
+  _perfectSwitchTiming: 0.1
+  OnArmorHPChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 895115666}
+        m_TargetAssemblyTypeName: Nebuloic.GUIHandler, Nebuloic
+        m_MethodName: UpdateHPs
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 519420034}
+        m_TargetAssemblyTypeName: Nebuloic.CameraAnimator, Nebuloic
+        m_MethodName: ShakeCamera
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnArmorVulnerabilityChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1058953428}
+        m_TargetAssemblyTypeName: ShipAnimator, Nebuloic
+        m_MethodName: UpdateVulnerability
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnEngineGearChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 895115666}
+        m_TargetAssemblyTypeName: Nebuloic.GUIHandler, Nebuloic
+        m_MethodName: UpdateGear
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1058953428}
+        m_TargetAssemblyTypeName: ShipAnimator, Nebuloic
+        m_MethodName: ShowDeceleration
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1058953428}
+        m_TargetAssemblyTypeName: ShipAnimator, Nebuloic
+        m_MethodName: UpdateThruster
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnEnginePerfectSwitch:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEnginePerfectSwitchChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!84 &1124410619
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 2084
+  m_Height: 1172
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 90
+  m_ColorFormat: 6
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 0
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &1210425012
 GameObject:
   m_ObjectHideFlags: 0
@@ -1856,7 +1943,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 487f1ff592018c340ac25e2d115ad82a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderTexture: {fileID: 782332047}
+  renderTexture: {fileID: 1124410619}
   material: {fileID: 2100000, guid: e6ff111c5b8de464ba218d02a78df817, type: 2}
 --- !u!21 &1471062465
 Material:
@@ -1899,7 +1986,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 782332047}
+        m_Texture: {fileID: 1124410619}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -6837,7 +6924,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -180}
 --- !u!61 &1502588997
 BoxCollider2D:
@@ -12060,5 +12147,5 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

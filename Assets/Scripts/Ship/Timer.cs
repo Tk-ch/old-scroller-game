@@ -16,7 +16,7 @@ namespace Nebuloic
         public event Action OnTimerEnd;
 
 
-        public void UpdateTimer(float deltaTime) {
+        public void Update(float deltaTime) {
             TimeInSeconds -= deltaTime;
             if (TimeInSeconds <= 0) {
                 OnTimerEnd?.Invoke();

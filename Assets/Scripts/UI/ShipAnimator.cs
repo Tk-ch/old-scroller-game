@@ -1,8 +1,11 @@
+using Nebuloic;
 using System.Collections;
 using UnityEngine;
 
 public class ShipAnimator : MonoBehaviour
 {
+
+
     [SerializeField] GameObject _deceleration;
     [SerializeField] float _decelerationShowTimeInSeconds;
     [SerializeField] SpriteRenderer _thruster;
@@ -23,9 +26,6 @@ public class ShipAnimator : MonoBehaviour
         _deceleration.SetActive(false);
     }
 
-    private void Start()
-    {
-    }
 
     public void UpdateVulnerability(bool vuln) {
         if (!vuln) StartCoroutine(Utility.ExecuteAfterTime(Blink, _blinkTime));
@@ -52,12 +52,9 @@ public class ShipAnimator : MonoBehaviour
         renderer.color = col;
     }
 
-    
-    
-
     public void UpdateThruster(int gear, int _)
     {
-        //_thruster.material.SetColor("_Color", _ship.GearColorsSelected[gear]);
+        _thruster.material.SetColor("_Color", GameManager.guiHandler.GearColorsSelected[gear]);
     }
 
     private void Update()

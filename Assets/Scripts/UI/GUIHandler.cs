@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Nebuloic
 {
     /// <summary>
-    /// A class to handle the UI of the game, has references to various gameobjects and UI elements
+    /// A class to handle the GUI of the game, has references to various gameobjects and UI elements
     /// </summary>
     public class GUIHandler : MonoBehaviour
     {
@@ -57,11 +57,13 @@ namespace Nebuloic
             warningPanel.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
         }
 
-        private void Start()
+        private void Awake()
         {
-            _ship.ArmorHPChanged.AddListener(OnHPChanged);
+            SetGUI(this);
             CreateGears();
         }
+        static void SetGUI( GUIHandler gui ) => GameManager.guiHandler = gui;
+
         /// <summary>
         /// Generates UI elements for each gear
         /// </summary>
@@ -85,9 +87,8 @@ namespace Nebuloic
         /// <summary>
         /// Updates the HPs after taken damage/healed
         /// </summary>
-        private void OnHPChanged(int damage)
+        public void UpdateHPs(int HPs, int _)
         {
-            int HPs = _ship.Logic.Armor.HP;
             foreach (GearUI gear in gears)
             {
                 HPs -= gear.UpdateHPs(HPs);
@@ -96,7 +97,7 @@ namespace Nebuloic
         /// <summary>
         /// Updates the current shift with a color
         /// </summary>
-        public void OnGearChanged(int gear, int _)
+        public void UpdateGear(int gear, int _)
         {
             for (int i = 0; i < gears.Count; i++)
             {
