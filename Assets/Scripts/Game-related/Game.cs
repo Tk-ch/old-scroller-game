@@ -12,7 +12,10 @@ using Nebuloic;
 public class Game : MonoBehaviour
 {
     // Player field 
-    public Player player;
+    private ShipLogic _ship;
+    public ShipLogic Ship => _ship ?? (_ship = shipBehaviour.Logic);
+
+    [SerializeField] public ShipBehaviour shipBehaviour;
 
     // The background of the scene
     [SerializeField] GameObject background;
@@ -66,7 +69,7 @@ public class Game : MonoBehaviour
     private void FixedUpdate()
     {
 
-        levelPosition += player.EngineComponent.Engine.CurrentSpeed * Time.fixedDeltaTime;
+        levelPosition += Ship.Engine.CurrentSpeed * Time.fixedDeltaTime;
 
         // Instantiates every element that is "before" a given position
         while (level.Elements.Count > 0 && level.Elements[0].Y <= levelPosition) {
@@ -85,7 +88,7 @@ public class Game : MonoBehaviour
     }
 
     public void FinishGame() {
-        if (player.ArmorComponent.Armor.HP <= 0) {
+        if (Ship.Armor.HP <= 0) {
             UIhandler.ShowFinishGame("You died lol");
         } 
         else

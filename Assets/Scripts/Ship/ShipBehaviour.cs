@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ShipBehaviour : MonoBehaviour
 {
@@ -17,33 +18,14 @@ public class ShipBehaviour : MonoBehaviour
     [SerializeField] private float _bulletSpeed;
 
     private ShipLogic _shipLogic;
-    public ShipLogic Logic => _shipLogic ?? (_shipLogic = new ShipLogic(_shipData));
+    public ShipLogic Logic => _shipLogic ?? (_shipLogic = new ShipLogic(_shipData, _rollDurationInSeconds));
 
+    public UnityEvent<int> ArmorHPChanged;
 
-
-    private bool _isRolling;
-    public bool IsRolling
-    {
-        get { return _isRolling; }
-        set
-        {
-            _isRolling = value;
-            OnRollChanged?.Invoke();
-        }
-    }
+    
 
     public float HorizontalInput { get; set; }
-
-    public event Action OnRollChanged;
-
-    public void Roll()
-    {
-        if (!IsRolling)
-        {
-            IsRolling = true;
-            StartCoroutine(Utility.ExecuteAfterTime(ResetRoll, _rollDurationInSeconds));
-        }
-    }
+    public ShipData ShipData { get => _shipData; }
 
     public bool Shoot()
     {
@@ -60,7 +42,7 @@ public class ShipBehaviour : MonoBehaviour
         float diff = Mathf.Abs(transform.position.x) - _horizontalLimits;
         if (diff > 0)
         {
-            if (!IsRolling)
+            if (!Logic.IsRolling)
             {
                 transform.Translate(new Vector2(-diff * _limitLerpSpeed * Mathf.Sign(transform.position.x), 0), Space.World);
             }
@@ -71,7 +53,6 @@ public class ShipBehaviour : MonoBehaviour
         }
     }
 
-    void ResetRoll() => IsRolling = false;
 
 
     private void Update()

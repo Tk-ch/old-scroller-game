@@ -8,9 +8,10 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private ShipLogic _ship;
+    private ShipBehaviour  _shipBehaviour;
 
-
-    public ShipLogic Ship => _ship ?? ( _ship= GetComponent<ShipBehaviour>().Logic );
+    public ShipBehaviour ShipBehaviour => _shipBehaviour ?? (_shipBehaviour = GetComponent<ShipBehaviour>()); 
+    public ShipLogic Ship => _ship ?? ( _ship = ShipBehaviour.Logic );
 
     [SerializeField] float holdDownTimeInSeconds;
     [SerializeField] float repeatShootingInSeconds;
@@ -29,7 +30,7 @@ public class Player : MonoBehaviour
     /// </summary>
     private void GetInputs()
     {
-        Ship.HorizontalInput = Input.GetAxis("Horizontal");
+        ShipBehaviour.HorizontalInput = Input.GetAxis("Horizontal");
         if (Input.GetButtonDown("Roll") && !Ship.IsRolling)
         {
             Ship.Roll();
@@ -46,13 +47,13 @@ public class Player : MonoBehaviour
         }
         if (Input.GetButtonDown("ShiftUp"))
         {
-            Ship.Logic.Engine.CurrentGear += 1;
+            Ship.Engine.CurrentGear += 1;
         }  
     }
 
     IEnumerator RepeatedShooting()
     {
-        if (Ship.Shoot()) // gear has changed when shooting
+        if (ShipBehaviour.Shoot()) // gear has changed when shooting
         {
             StopCoroutine(_stopHoldDownCoro);
             _stopHoldDownCoro = StartCoroutine(StopHoldDown());
@@ -63,7 +64,7 @@ public class Player : MonoBehaviour
 
     IEnumerator StopHoldDown() {
         yield return new WaitForSeconds(holdDownTimeInSeconds);
-        Ship.Logic.Engine.CurrentGear -= 1;
+        Ship.Engine.CurrentGear -= 1;
         _stopHoldDownCoro = StartCoroutine(StopHoldDown());
     }
 

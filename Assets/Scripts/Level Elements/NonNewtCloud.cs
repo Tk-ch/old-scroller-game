@@ -23,9 +23,9 @@ public class NonNewtCloud : FieldObstacle
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (!collision.CompareTag("Player")) return;
-        if (game.player.EngineComponent.Engine.CurrentGear > gear) {
-            game.player.EngineComponent.Engine.CurrentGear -= (int)gearDamage;
-            game.player.ArmorComponent.Armor.HP -= (int)damage;
+        if (game.Ship.Engine.CurrentGear > gear) {
+            game.Ship.Engine.CurrentGear -= (int)gearDamage;
+            game.Ship.Armor.HP -= (int)damage;
         }
     }
 

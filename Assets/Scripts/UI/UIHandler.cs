@@ -6,8 +6,8 @@ namespace Assets.Scripts.UI
 {
     public class UIHandler : MonoBehaviour
     {
-        private Player _player;
-        Player PlayerComponent => _player ?? (_player = gameObject.GetComponent<Player>());
+        private ShipLogic _ship;
+        ShipLogic Ship => _ship ?? (_ship = gameObject.GetComponent<ShipBehaviour>().Logic);
         [SerializeField] ParticleSystem Stars;
         [SerializeField] ParticleSystem Thruster;
         [SerializeField] GUIHandler guiHandler;
@@ -16,14 +16,14 @@ namespace Assets.Scripts.UI
         private void Update()
         {
             var velocity = Stars.velocityOverLifetime;
-            velocity.speedModifierMultiplier = PlayerComponent.EngineComponent.Engine.CurrentSpeed;
+            velocity.speedModifierMultiplier = Ship.Engine.CurrentSpeed;
 
             velocity = Thruster.velocityOverLifetime;
-            velocity.speedModifierMultiplier = PlayerComponent.EngineComponent.Engine.CurrentSpeed;
+            velocity.speedModifierMultiplier = Ship.Engine.CurrentSpeed;
             var m = Thruster.main;
-            m.startColor = guiHandler.GearColorsSelected[PlayerComponent.EngineComponent.Engine.CurrentGear];
+            m.startColor = guiHandler.GearColorsSelected[Ship.Engine.CurrentGear];
             var emission = Thruster.emission;
-            emission.rateOverTimeMultiplier = PlayerComponent.EngineComponent.Engine.SpeedPercentage * 20;
+            emission.rateOverTimeMultiplier = Ship.Engine.SpeedPercentage * 20;
         }
 
     }

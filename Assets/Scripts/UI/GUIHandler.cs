@@ -10,7 +10,7 @@ namespace Nebuloic
     /// </summary>
     public class GUIHandler : MonoBehaviour
     {
-        [SerializeField] Player _player;
+        [SerializeField] ShipBehaviour _ship;
         [SerializeField] public Color[] _gearColors;
         [SerializeField] private Color[] _gearColorsSelected;
         [SerializeField] Text _levelTime;
@@ -59,7 +59,7 @@ namespace Nebuloic
 
         private void Start()
         {
-            _player.ArmorComponent.ArmorHPChanged.AddListener(OnHPChanged);
+            _ship.ArmorHPChanged.AddListener(OnHPChanged);
             CreateGears();
         }
         /// <summary>
@@ -68,7 +68,7 @@ namespace Nebuloic
         private void CreateGears()
         {
             int k = 0;
-            foreach (int hps in _player.ArmorComponent.Armor.GearHPs)
+            foreach (int hps in _ship.ShipData.ArmorData.GearHPs)
             {
                 GameObject gear = Instantiate(gearPrefab, gearParent);
                 gear.transform.SetSiblingIndex(0);
@@ -87,7 +87,7 @@ namespace Nebuloic
         /// </summary>
         private void OnHPChanged(int damage)
         {
-            int HPs = _player.ArmorComponent.Armor.HP;
+            int HPs = _ship.Logic.Armor.HP;
             foreach (GearUI gear in gears)
             {
                 HPs -= gear.UpdateHPs(HPs);
@@ -109,9 +109,9 @@ namespace Nebuloic
 
         private void ChangeSpeedColor()
         {
-            speed.color = GearColorsSelected[_player.EngineComponent.Engine.CurrentGear];
+            speed.color = GearColorsSelected[_ship.Logic.Engine.CurrentGear];
             speed2.color = Color.white;
-            speedParent.color = _gearColors[_player.EngineComponent.Engine.CurrentGear];
+            speedParent.color = _gearColors[_ship.Logic.Engine.CurrentGear];
         }
 
 
@@ -126,14 +126,14 @@ namespace Nebuloic
 
         void UpdateSpeed()
         {
-            speed.fillAmount = _player.EngineComponent.Engine.SpeedPercentage;
-            speed2.fillAmount = Mathf.Lerp(speed2.fillAmount, _player.EngineComponent.Engine.SpeedPercentage, 0.2f);
+            speed.fillAmount = _ship.Logic.Engine.SpeedPercentage;
+            speed2.fillAmount = Mathf.Lerp(speed2.fillAmount, _ship.Logic.Engine.SpeedPercentage, 0.2f);
         }
 
         void UpdateAcceleration()
         {
-            accel.fillAmount = Mathf.Sqrt(_player.EngineComponent.Engine.AccelerationPercentage);
-            accel2.fillAmount = _player.EngineComponent.Engine.AccelerationPercentage - 1;
+            accel.fillAmount = Mathf.Sqrt(_ship.Logic.Engine.AccelerationPercentage);
+            accel2.fillAmount = _ship.Logic.Engine.AccelerationPercentage - 1;
         }
 
         public void ShowFinishGame(string text)
