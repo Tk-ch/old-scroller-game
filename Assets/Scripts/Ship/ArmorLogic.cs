@@ -3,52 +3,59 @@ using UnityEngine;
 
 namespace Nebuloic
 {
-
-    /// <summary>
-    /// Class to manage ship's HP and check whether the shift can be increased. 
-    /// </summary>
-    //[CreateAssetMenu(fileName = "Armor", menuName = "Scribptable Objects/Armor", order = 1)]
-    public class Armor : ScriptableObject
+    public class ArmorLogic 
     {
-        [SerializeField] private int[] _gearHPs;
-        [SerializeField] float _invulnerabilityTime;
+        #region Fields
+        private readonly ArmorData _data;
 
         private int[] _cumulativeGearHPs;
         private int _hp;
+        private bool _isVulnerable = true;
+        private Timer _invulnerabilityTimer;
 
-        public int[] GearHPs { get => _gearHPs; }
-        public float InvulnerabilityTime { get => _invulnerabilityTime; }
+        public event Action<int, int> HPChanged;
+        public event Action<bool> VulnerabilityChanged;
+
+        #endregion
+
+        #region Constructor
+
+        public ArmorLogic(ArmorData data) {
+            _data = data;
+            Init();
+        }
+
+        #endregion
+
+        #region Properties
 
         public int HP
         {
             get => _hp;
             set
             {
-                if (_gearHPs.Length <= 0) return; //there's no point in setting HP when gearHPs are not initialized 
+                if (_data.GearHPs.Length <= 0) return; //there's no point in setting HP when gearHPs are not initialized 
                 if (_hp == value) return; // why change hp and invoke events if there's no change
                 if (!IsVulnerable && value < _hp) return; // invulnerability setup 
                 int damage = _hp - value;
                 _hp = Mathf.Clamp(value, 0, _cumulativeGearHPs[_cumulativeGearHPs.Length - 1]);
-                HPChanged?.Invoke(this, damage);
+                HPChanged?.Invoke(_hp, damage);
             }
         }
-        private bool _isVulnerable = true;
         public bool IsVulnerable
         {
-            get => _isVulnerable; 
+            get => _isVulnerable;
             set
             {
                 if (_isVulnerable == value) return;
                 _isVulnerable = value;
-                VulnerabilityChanged?.Invoke(this, value);
+                VulnerabilityChanged?.Invoke(value);
             }
         }
-
-        public event EventHandler<int> HPChanged;
-        public event EventHandler<bool> VulnerabilityChanged;
-
-        public int MaxGear {
-            get {
+        public int MaxGear
+        {
+            get
+            {
                 if (HP < _cumulativeGearHPs[0]) return 0;
                 for (int i = 1; i <= _cumulativeGearHPs.Length; i++)
                 {
@@ -58,32 +65,39 @@ namespace Nebuloic
             }
         }
 
+        #endregion
 
-        public Armor(int[] gearHPs) // constructor for the tests 
-        { 
-            _gearHPs = gearHPs;
-            Init();
-        }
-
-        public void Init() {
+        #region Methods
+        public void Init()
+        {
             GenerateCumulativeHPs();
             IsVulnerable = true;
             HPChanged += AddInvulnerability;
         }
 
-        private void AddInvulnerability(object _, int damage)
+        public void Update(float deltaTimeInSeconds) {
+            if (_invulnerabilityTimer != null) _invulnerabilityTimer.UpdateTimer(deltaTimeInSeconds);
+        }
+
+        private void AddInvulnerability(int _, int damage)
         {
             if (damage <= 0) return;
             IsVulnerable = false;
+            _invulnerabilityTimer = new Timer(_data.InvulnerabilityTime);
+            _invulnerabilityTimer.OnTimerEnd += () => {
+                IsVulnerable = true;
+                _invulnerabilityTimer = null;
+            };
         }
+
 
         public void GenerateCumulativeHPs()
         {
-            _cumulativeGearHPs = new int[_gearHPs.Length];
+            _cumulativeGearHPs = new int[_data.GearHPs.Length];
             int sum = 0;
-            for (int i = 0; i < _gearHPs.Length; i++)
+            for (int i = 0; i < _data.GearHPs.Length; i++)
             {
-                sum += _gearHPs[i];
+                sum += _data.GearHPs[i];
                 _cumulativeGearHPs[i] = sum;
             }
             HP = sum;
@@ -94,5 +108,6 @@ namespace Nebuloic
             gear = Mathf.Clamp(gear, 1, _cumulativeGearHPs.Length);
             return HP > _cumulativeGearHPs[gear - 1];
         }
+        #endregion
     }
 }

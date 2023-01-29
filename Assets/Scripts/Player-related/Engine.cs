@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Nebuloic
 {
-    [CreateAssetMenu(fileName = "Engine", menuName = "Scribptable Objects/Engine", order = 1)]
+//    [CreateAssetMenu(fileName = "Engine", menuName = "Scribptable Objects/Engine", order = 1)]
     public class Engine : ScriptableObject
     {
 
