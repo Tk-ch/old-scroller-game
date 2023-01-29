@@ -7,14 +7,10 @@ using UnityEngine;
 /// </summary>
 public class Player : MonoBehaviour
 {
-    private Ship _shipComponent;
-    private EngineBehaviour _engineComponent;
-    private ArmorBehaviour _armorComponent;
+    private ShipLogic _ship;
 
 
-    public Ship ShipComponent => _shipComponent ?? (_shipComponent= GetComponent<Ship>());
-    public EngineBehaviour EngineComponent => _engineComponent ?? (_engineComponent = GetComponent<EngineBehaviour>());
-    public ArmorBehaviour ArmorComponent => _armorComponent ?? (_armorComponent = GetComponent<ArmorBehaviour>());
+    public ShipLogic Ship => _ship ?? ( _ship= GetComponent<ShipBehaviour>().Logic );
 
     [SerializeField] float holdDownTimeInSeconds;
     [SerializeField] float repeatShootingInSeconds;
@@ -33,10 +29,10 @@ public class Player : MonoBehaviour
     /// </summary>
     private void GetInputs()
     {
-        ShipComponent.HorizontalInput = Input.GetAxis("Horizontal");
-        if (Input.GetButtonDown("Roll") && !ShipComponent.IsRolling)
+        Ship.HorizontalInput = Input.GetAxis("Horizontal");
+        if (Input.GetButtonDown("Roll") && !Ship.IsRolling)
         {
-            ShipComponent.Roll();
+            Ship.Roll();
         }
         if (Input.GetButtonDown("ShiftDown"))
         {
@@ -50,13 +46,13 @@ public class Player : MonoBehaviour
         }
         if (Input.GetButtonDown("ShiftUp"))
         {
-            EngineComponent.Engine.CurrentGear += 1;
+            Ship.Logic.Engine.CurrentGear += 1;
         }  
     }
 
     IEnumerator RepeatedShooting()
     {
-        if (ShipComponent.Shoot()) // gear has changed when shooting
+        if (Ship.Shoot()) // gear has changed when shooting
         {
             StopCoroutine(_stopHoldDownCoro);
             _stopHoldDownCoro = StartCoroutine(StopHoldDown());
@@ -67,7 +63,7 @@ public class Player : MonoBehaviour
 
     IEnumerator StopHoldDown() {
         yield return new WaitForSeconds(holdDownTimeInSeconds);
-        EngineComponent.Engine.CurrentGear -= 1;
+        Ship.Logic.Engine.CurrentGear -= 1;
         _stopHoldDownCoro = StartCoroutine(StopHoldDown());
     }
 

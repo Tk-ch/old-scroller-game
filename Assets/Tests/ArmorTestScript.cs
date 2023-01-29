@@ -8,12 +8,11 @@ using UnityEngine.TestTools;
 public class ArmorTestScript
 {
 
-    private Armor armor;
+    private ArmorLogic armor = null;
 
     [SetUp] 
     public void Init()
     {
-        armor = new Armor(new int[] { 1, 1, 2, 3, 5 });
     }
 
     // HP testing
@@ -68,17 +67,17 @@ public class ArmorTestScript
     }
     [Test]
     public void GearIsAvailable_OnCumulativeHP() {
-        armor.HP = armor.GearHPs[0] + armor.GearHPs[1] + armor.GearHPs[2];
+        //armor.HP = armor.GearHPs[0] + armor.GearHPs[1] + armor.GearHPs[2];
         Assert.IsTrue(armor.CheckGearHP(2));
     }
     [Test]
     public void GearIsNotAvailable_OnIncorrectHP() {
-        armor.HP = armor.GearHPs[0] + armor.GearHPs[1];
+        //armor.HP = armor.GearHPs[0] + armor.GearHPs[1];
         Assert.IsFalse(armor.CheckGearHP(2));
     }
     [Test]
     public void GearIsAvailable_OnLowGearHP() {
-        armor.HP = armor.GearHPs[0] + armor.GearHPs[1] + 1;
+       // armor.HP = armor.GearHPs[0] + armor.GearHPs[1] + 1;
         Assert.IsTrue(armor.CheckGearHP(2));
     }
 

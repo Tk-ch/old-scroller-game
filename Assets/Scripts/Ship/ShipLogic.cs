@@ -6,8 +6,12 @@ namespace Nebuloic
     public class ShipLogic 
     {
 
-        private ArmorLogic _armorLogic;
-        private EngineLogic _engineLogic;
+        private readonly ArmorLogic _armorLogic;
+        private readonly EngineLogic _engineLogic;
+
+        public EngineLogic Engine => _engineLogic;
+        public ArmorLogic Armor => _armorLogic;
+
 
 
         public ShipLogic( ShipData _data ) {

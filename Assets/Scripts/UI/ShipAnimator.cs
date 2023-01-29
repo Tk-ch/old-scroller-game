@@ -62,13 +62,13 @@ public class ShipAnimator : MonoBehaviour
 
     private void Update()
     {
-        if (_player.ShipComponent.IsRolling)
+        if (_player.Ship.IsRolling)
         {
             transform.Rotate(0, 720 * Time.deltaTime, 0);
         }
         else
         {
-            transform.rotation = Quaternion.identity * Quaternion.Euler(new Vector3(0, _player.ShipComponent.HorizontalInput * _horizontalRotationMultiplier));
+            transform.rotation = Quaternion.identity * Quaternion.Euler(new Vector3(0, _player.Ship.HorizontalInput * _horizontalRotationMultiplier));
         }
         _thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Clamp01(Mathf.Lerp(_thruster.material.GetFloat("_tValue"), _player.EngineComponent.Engine.SpeedPercentage, 0.5f)) + 0.1f, 2));
     }

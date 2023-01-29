@@ -15,7 +15,7 @@ public class Heal : ObjectObstacle
     private void Check(Collider2D collision)
     {
         if (!collision.CompareTag("Player")) return;
-        if (!game.player.ShipComponent.IsRolling) return;
+        if (!game.player.Ship.IsRolling) return;
         game.player.EngineComponent.Engine.CurrentGear -= (int)gearDamage;
         game.player.ArmorComponent.Armor.HP -= (int)damage;
         if (canBeDestroyedByShip) Destroy(gameObject);

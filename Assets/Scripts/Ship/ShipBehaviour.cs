@@ -17,9 +17,8 @@ public class ShipBehaviour : MonoBehaviour
     [SerializeField] private float _bulletSpeed;
 
     private ShipLogic _shipLogic;
+    public ShipLogic Logic => _shipLogic ?? (_shipLogic = new ShipLogic(_shipData));
 
-    private Player _player;
-    Player PlayerComponent => _player ?? (_player = gameObject.GetComponent<Player>());
 
 
     private bool _isRolling;
@@ -48,11 +47,11 @@ public class ShipBehaviour : MonoBehaviour
 
     public bool Shoot()
     {
-        if (!PlayerComponent.EngineComponent.Engine.CanShoot(_bulletPrefab.GetComponent<Projectile>().SpeedReduction)) return false;
+        if (!_shipLogic.Engine.CanShoot(_bulletPrefab.GetComponent<Projectile>().SpeedReduction)) return false;
         GameObject bullet = Instantiate(_bulletPrefab, transform.position, Quaternion.identity);
         bullet.GetComponent<Rigidbody2D>().AddForce(Vector2.up * _bulletSpeed);
-        PlayerComponent.EngineComponent.Engine.CurrentSpeed -= bullet.GetComponent<Projectile>().SpeedReduction;
-        return PlayerComponent.EngineComponent.Engine.DecreaseGearBySpeed();
+        _shipLogic.Engine.CurrentSpeed -= bullet.GetComponent<Projectile>().SpeedReduction;
+        return _shipLogic.Engine.DecreaseGearBySpeed();
     }
 
     private void FixedUpdate()
@@ -74,10 +73,6 @@ public class ShipBehaviour : MonoBehaviour
 
     void ResetRoll() => IsRolling = false;
 
-    private void Start()
-    {
-        _shipLogic = new ShipLogic(_shipData);
-    }
 
     private void Update()
     {
