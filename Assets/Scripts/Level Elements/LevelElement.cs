@@ -1,3 +1,4 @@
+using Nebuloic;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -17,7 +18,7 @@ public abstract class LevelElement : MonoBehaviour
     // Most level elements move downward with the speed of the player, so this method does this
     protected void FixedUpdate()
     {
-        transform.Translate(new Vector2(0, -game.Ship.Engine.CurrentSpeed * Time.fixedDeltaTime), Space.World);
+        transform.Translate(new Vector2(0, -Player.instance.Ship.Engine.CurrentSpeed * Time.fixedDeltaTime), Space.World);
 
         if (transform.position.y < destroyCoordinate) Destroy(gameObject);
     }

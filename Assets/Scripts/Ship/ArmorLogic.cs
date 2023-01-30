@@ -60,9 +60,9 @@ namespace Nebuloic
             get
             {
                 if (HP < _cumulativeGearHPs[0]) return 0;
-                for (int i = 1; i <= _cumulativeGearHPs.Length; i++)
+                for (int i = 1; i < _cumulativeGearHPs.Length; i++)
                 {
-                    if (HP <= _cumulativeGearHPs[i - 1] + 1) return i;
+                    if (HP <= _cumulativeGearHPs[i]) return i;
                 }
                 return _cumulativeGearHPs.Length - 1;
             }
@@ -105,11 +105,6 @@ namespace Nebuloic
             HP = sum;
         }
 
-        public bool CheckGearHP(int gear)
-        {
-            gear = Mathf.Clamp(gear, 1, _cumulativeGearHPs.Length);
-            return HP > _cumulativeGearHPs[gear - 1];
-        }
         #endregion
     }
 }

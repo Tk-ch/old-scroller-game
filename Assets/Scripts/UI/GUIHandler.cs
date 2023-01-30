@@ -10,9 +10,6 @@ namespace Nebuloic
     /// </summary>
     public class GUIHandler : MonoBehaviour
     {
-        [SerializeField] ShipBehaviour _ship;
-        [SerializeField] public Color[] _gearColors;
-        [SerializeField] private Color[] _gearColorsSelected;
         [SerializeField] Text _levelTime;
         [SerializeField] Transform gearParent;
         [SerializeField] GameObject gearPrefab;
@@ -38,7 +35,6 @@ namespace Nebuloic
 
         public float time;
 
-        public Color[] GearColorsSelected { get => _gearColorsSelected; set => _gearColorsSelected = value; }
 
         /// <summary>
         /// Sets the warningPanel to a gear color when non-newtonian cloud appears or whatever
@@ -57,12 +53,10 @@ namespace Nebuloic
             warningPanel.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
         }
 
-        private void Awake()
+        private void Start()
         {
-            SetGUI(this);
             CreateGears();
         }
-        static void SetGUI( GUIHandler gui ) => GameManager.guiHandler = gui;
 
         /// <summary>
         /// Generates UI elements for each gear
@@ -70,14 +64,14 @@ namespace Nebuloic
         private void CreateGears()
         {
             int k = 0;
-            foreach (int hps in _ship.ShipData.ArmorData.GearHPs)
+            foreach (int hps in Player.instance.ShipBehaviour.ShipData.ArmorData.GearHPs)
             {
                 GameObject gear = Instantiate(gearPrefab, gearParent);
                 gear.transform.SetSiblingIndex(0);
-                gear.GetComponent<Image>().color = _gearColors[k];
+                gear.GetComponent<Image>().color = UIHandler.instance.GearColors[k];
                 GearUI gearUI = gear.GetComponent<GearUI>();
-                gearUI.gearColor = _gearColors[k];
-                gearUI.gearColorSelected = GearColorsSelected[k];
+                gearUI.gearColor = UIHandler.instance.GearColors[k];
+                gearUI.gearColorSelected = UIHandler.instance.GearColorsSelected[k];
                 gearUI.CreateHPs(hps);
 
                 gears.Add(gearUI);
@@ -110,9 +104,9 @@ namespace Nebuloic
 
         private void ChangeSpeedColor()
         {
-            speed.color = GearColorsSelected[_ship.Logic.Engine.CurrentGear];
+            speed.color = UIHandler.instance.GearColorsSelected[Player.instance.Ship.Engine.CurrentGear];
             speed2.color = Color.white;
-            speedParent.color = _gearColors[_ship.Logic.Engine.CurrentGear];
+            speedParent.color = UIHandler.instance.GearColors[Player.instance.Ship.Engine.CurrentGear];
         }
 
 
@@ -127,14 +121,14 @@ namespace Nebuloic
 
         void UpdateSpeed()
         {
-            speed.fillAmount = _ship.Logic.Engine.SpeedPercentage;
-            speed2.fillAmount = Mathf.Lerp(speed2.fillAmount, _ship.Logic.Engine.SpeedPercentage, 0.2f);
+            speed.fillAmount = Player.instance.Ship.Engine.SpeedPercentage;
+            speed2.fillAmount = Mathf.Lerp(speed2.fillAmount, Player.instance.Ship.Engine.SpeedPercentage, 0.2f);
         }
 
         void UpdateAcceleration()
         {
-            accel.fillAmount = Mathf.Sqrt(_ship.Logic.Engine.AccelerationPercentage);
-            accel2.fillAmount = _ship.Logic.Engine.AccelerationPercentage - 1;
+            accel.fillAmount = Mathf.Sqrt(Player.instance.Ship.Engine.AccelerationPercentage);
+            accel2.fillAmount = Player.instance.Ship.Engine.AccelerationPercentage - 1;
         }
 
         public void ShowFinishGame(string text)

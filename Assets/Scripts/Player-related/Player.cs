@@ -7,6 +7,9 @@ using UnityEngine;
 /// </summary>
 public class Player : MonoBehaviour
 {
+
+    public static Player instance { get; private set; }
+
     private ShipLogic _ship;
     private ShipBehaviour  _shipBehaviour;
 
@@ -15,10 +18,14 @@ public class Player : MonoBehaviour
 
     [SerializeField] float holdDownTimeInSeconds;
     [SerializeField] float repeatShootingInSeconds;
-    [SerializeField] public GUIHandler guiHandler;
 
     Coroutine _stopHoldDownCoro;
     Coroutine _repeatedShootingCoro;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     void Update()
     {

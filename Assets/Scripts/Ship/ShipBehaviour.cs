@@ -33,7 +33,6 @@ namespace Nebuloic
 
         private void Awake()
         {
-            SetShip(this);
 
             Logic.Armor.OnHPChanged += (hp, dmg) => OnArmorHPChanged?.Invoke(hp, dmg);
             Logic.Armor.OnVulnerabilityChanged += (vuln) => OnArmorVulnerabilityChanged?.Invoke(vuln);
@@ -48,9 +47,6 @@ namespace Nebuloic
             OnEngineGearChanged.Invoke(0, 0);
         }
 
-        static void SetShip( ShipBehaviour ship ) {
-            GameManager.ship = ship;
-        }
 
         public float HorizontalInput { get; set; }
         public ShipData ShipData { get => _shipData; }

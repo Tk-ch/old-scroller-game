@@ -4,12 +4,9 @@ using UnityEngine;
 
 public class ShipAnimator : MonoBehaviour
 {
-
-
     [SerializeField] GameObject _deceleration;
     [SerializeField] float _decelerationShowTimeInSeconds;
     [SerializeField] SpriteRenderer _thruster;
-    [SerializeField] ShipBehaviour _ship;
     [SerializeField] float _horizontalRotationMultiplier;
     [SerializeField] float _blinkTime;
 
@@ -39,7 +36,7 @@ public class ShipAnimator : MonoBehaviour
             SetShipAlpha(1);
         else
             SetShipAlpha(0);
-        if (!_ship.Logic.Armor.IsVulnerable) StartCoroutine(Utility.ExecuteAfterTime(Blink, _blinkTime));
+        if (!Player.instance.Ship.Armor.IsVulnerable) StartCoroutine(Utility.ExecuteAfterTime(Blink, _blinkTime));
         else SetShipAlpha(1);
 
     }
@@ -54,19 +51,19 @@ public class ShipAnimator : MonoBehaviour
 
     public void UpdateThruster(int gear, int _)
     {
-        _thruster.material.SetColor("_Color", GameManager.guiHandler.GearColorsSelected[gear]);
+        _thruster.material.SetColor("_Color", UIHandler.instance.GearColorsSelected[gear]);
     }
 
     private void Update()
     {
-        if (_ship.Logic.IsRolling)
+        if (Player.instance.Ship.IsRolling)
         {
             transform.Rotate(0, 720 * Time.deltaTime, 0);
         }
         else
         {
-            transform.rotation = Quaternion.identity * Quaternion.Euler(new Vector3(0, _ship.HorizontalInput * _horizontalRotationMultiplier));
+            transform.rotation = Quaternion.identity * Quaternion.Euler(new Vector3(0, Player.instance.ShipBehaviour.HorizontalInput * _horizontalRotationMultiplier));
         }
-        _thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Clamp01(Mathf.Lerp(_thruster.material.GetFloat("_tValue"), _ship.Logic.Engine.SpeedPercentage, 0.5f)) + 0.1f, 2));
+        _thruster.material.SetFloat("_tValue", Mathf.Pow(Mathf.Clamp01(Mathf.Lerp(_thruster.material.GetFloat("_tValue"), Player.instance.Ship.Engine.SpeedPercentage, 0.5f)) + 0.1f, 2));
     }
 }

@@ -2,28 +2,36 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Assets.Scripts.UI
+namespace Nebuloic
 {
     public class UIHandler : MonoBehaviour
     {
-        private ShipLogic _ship;
-        ShipLogic Ship => _ship ?? (_ship = gameObject.GetComponent<ShipBehaviour>().Logic);
+
+        public static UIHandler instance;
+
         [SerializeField] ParticleSystem Stars;
         [SerializeField] ParticleSystem Thruster;
-        [SerializeField] GUIHandler guiHandler;
+        [SerializeField] public GUIHandler guiHandler;
+        [SerializeField] public Color[] GearColors;
+        [SerializeField] public Color[] GearColorsSelected;
 
+
+        private void Awake()
+        {
+            instance = this;
+        }
 
         private void Update()
         {
             var velocity = Stars.velocityOverLifetime;
-            velocity.speedModifierMultiplier = Ship.Engine.CurrentSpeed;
+            velocity.speedModifierMultiplier = Player.instance.Ship.Engine.CurrentSpeed;
 
             velocity = Thruster.velocityOverLifetime;
-            velocity.speedModifierMultiplier = Ship.Engine.CurrentSpeed;
+            velocity.speedModifierMultiplier = Player.instance.Ship.Engine.CurrentSpeed;
             var m = Thruster.main;
-            m.startColor = guiHandler.GearColorsSelected[Ship.Engine.CurrentGear];
+            m.startColor = GearColorsSelected[Player.instance.Ship.Engine.CurrentGear];
             var emission = Thruster.emission;
-            emission.rateOverTimeMultiplier = Ship.Engine.SpeedPercentage * 20;
+            emission.rateOverTimeMultiplier = Player.instance.Ship.Engine.SpeedPercentage * 20;
         }
 
     }

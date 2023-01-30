@@ -11,7 +11,7 @@ public class BoostOrHeal : ObjectObstacle
 
     private void Start()
     {
-        game.Ship.OnRollChanged += UpdateColor;
+        Player.instance.Ship.OnRollChanged += UpdateColor;
     }
 
     private void UpdateColor(bool isRolling) {
@@ -26,12 +26,12 @@ public class BoostOrHeal : ObjectObstacle
     private void Check(Collider2D collision)
     {
         if (!collision.CompareTag("Player")) return;
-        if (game.Ship.IsRolling)
+        if (Player.instance.Ship.IsRolling)
         {
-            game.Ship.Engine.CurrentAcceleration += accelerationBoost;
+            Player.instance.Ship.Engine.CurrentAcceleration += accelerationBoost;
         }
         else {
-            game.Ship.Armor.HP -= (int)damage;
+            Player.instance.Ship.Armor.HP -= (int)damage;
         }
         if (canBeDestroyedByHit) {
 
@@ -41,6 +41,6 @@ public class BoostOrHeal : ObjectObstacle
 
     private void OnDestroy()
     {
-        game.Ship.OnRollChanged -= UpdateColor;
+        Player.instance.Ship.OnRollChanged -= UpdateColor;
     }
 }

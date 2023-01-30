@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Nebuloic;
+using System.Collections;
 using UnityEngine;
 
 
@@ -12,10 +13,10 @@ public class NonNewtCloud : FieldObstacle
 
     private new void Start()
     {
-        Color c = game.UIhandler.GearColorsSelected[(int)gear];
+        Color c = UIHandler.instance.GearColorsSelected[(int)gear];
         c.a = 0.5f;
         GetComponent<SpriteRenderer>().color = c;
-        game.UIhandler.SetWarning(c, 5f);
+        UIHandler.instance.guiHandler.SetWarning(c, 5f);
         
         base.Start();
     }
@@ -23,9 +24,9 @@ public class NonNewtCloud : FieldObstacle
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (!collision.CompareTag("Player")) return;
-        if (game.Ship.Engine.CurrentGear > gear) {
-            game.Ship.Engine.CurrentGear -= (int)gearDamage;
-            game.Ship.Armor.HP -= (int)damage;
+        if (Player.instance.Ship.Engine.CurrentGear > gear) {
+            Player.instance.Ship.Engine.CurrentGear -= (int)gearDamage;
+            Player.instance.Ship.Armor.HP -= (int)damage;
         }
     }
 
