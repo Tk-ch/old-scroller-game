@@ -14,12 +14,12 @@ public abstract class FieldObstacle : Obstacle
 {
     private FieldObstacleData fieldObstacleData;
 
-    private void OnEnable() => UpdateData();
+    private void OnValidate() => UpdateData();
 
     protected void Start() => UpdateData();
 
     protected void UpdateData() {
-        if (data == null) data = fieldObstacleData;
+        if (data == null && fieldObstacleData != null) data = fieldObstacleData; 
         transform.localScale = new Vector3(transform.localScale.x, ((FieldObstacleData) data).Length, 1);
     }
 

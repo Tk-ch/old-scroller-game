@@ -13,7 +13,7 @@ public class LevelElementInfo : IComparable<LevelElementInfo>
     /// <summary>
     /// Properties of a particular Level Element are saved there as (fieldName): (fieldValue)
     /// </summary>
-    public Dictionary<string, object> Properties = new Dictionary<string, object>();
+    public LevelElementData Data; 
 
 
     // Sorting purposes

@@ -41,10 +41,9 @@ namespace Nebuloic
         void InstantiateElement(LevelElementInfo el)
         {
             GameObject prefab = Instantiate(Resources.Load("Prefabs/" + el.PrefabName, typeof(GameObject)), obstacleParent, true) as GameObject;
-            float yOffset = el.Properties.TryGetValue("length", out object v) ? Convert.ToSingle(v) : 0;
+            float yOffset = (el.Data is FieldObstacleData) ? ((FieldObstacleData) el.Data).Length : 0;  
             prefab.transform.position = new Vector3(el.X, obstacleParent.position.y + yOffset, obstacleParent.position.z);
-            el.Properties.Add("game", this);
-            prefab.GetComponent<LevelElement>().Init(el.Properties);
+            prefab.GetComponent<LevelElement>().Init(el.Data);
         }
 
         // Is run before first frame of the Scene
@@ -78,7 +77,7 @@ namespace Nebuloic
         private void Update()
         {
             // Just an update to the background
-            background.GetComponent<Renderer>().material.SetFloat("_Y", levelPosition / Screen.height * 15);
+            if (background != null) background.GetComponent<Renderer>().material.SetFloat("_Y", levelPosition / Screen.height * 15);
             gameTimeInSeconds += Time.deltaTime;
             UIHandler.instance.guiHandler.time = gameTimeInSeconds;
             UIHandler.instance.guiHandler.tValueMap = levelPosition / endCoord;

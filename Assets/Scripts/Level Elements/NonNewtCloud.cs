@@ -27,16 +27,17 @@ public class NonNewtCloud : FieldObstacle
 
     private new void UpdateData()
     {
+
         if (data == null) data = nonNewtCloudData;
         base.UpdateData();
 
-        
+        NonNewtCloudData localData = (NonNewtCloudData)data; 
 
         if (UIHandler.instance == null) return;
 
-        nonNewtCloudData.Gear = Mathf.Clamp((int)nonNewtCloudData.Gear, 0, UIHandler.instance.GearColors.Length-1);
+        nonNewtCloudData.Gear = Mathf.Clamp((int)localData.Gear, 0, UIHandler.instance.GearColors.Length-1);
 
-        Color c = UIHandler.instance.GearColorsSelected[(int)nonNewtCloudData.Gear];
+        Color c = UIHandler.instance.GearColorsSelected[(int)localData.Gear];
         c.a = 0.5f;
         GetComponent<SpriteRenderer>().color = c;
         UIHandler.instance.guiHandler.SetWarning(c, 5f);
@@ -45,7 +46,7 @@ public class NonNewtCloud : FieldObstacle
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (!collision.CompareTag("Player")) return;
-        if (Player.instance.Ship.Engine.CurrentGear > nonNewtCloudData.Gear) {
+        if (Player.instance.Ship.Engine.CurrentGear > ((NonNewtCloudData)data).Gear) {
             Player.instance.Ship.Engine.CurrentGear -= (int)gearDamage;
             Player.instance.Ship.Armor.HP -= (int)damage;
         }
