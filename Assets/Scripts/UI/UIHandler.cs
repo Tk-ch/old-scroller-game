@@ -4,23 +4,24 @@ using UnityEngine;
 
 namespace Nebuloic
 {
+    [ExecuteInEditMode]
     public class UIHandler : MonoBehaviour
     {
 
         public static UIHandler instance;
-
+         
         [SerializeField] ParticleSystem Stars;
         [SerializeField] ParticleSystem Thruster;
         [SerializeField] public GUIHandler guiHandler;
         [SerializeField] public Color[] GearColors;
         [SerializeField] public Color[] GearColorsSelected;
 
-
-        private void Awake()
+        private void OnEnable()
         {
             instance = this;
         }
 
+#if !(UNITY_EDITOR)
         private void Update()
         {
             var velocity = Stars.velocityOverLifetime;
@@ -32,7 +33,9 @@ namespace Nebuloic
             m.startColor = GearColorsSelected[Player.instance.Ship.Engine.CurrentGear];
             var emission = Thruster.emission;
             emission.rateOverTimeMultiplier = Player.instance.Ship.Engine.SpeedPercentage * 20;
-        }
 
+            if (Player.instance.Ship.IsRolling) emission.rateOverTimeMultiplier *= 3;
+        }
+#endif
     }
 }

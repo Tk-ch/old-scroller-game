@@ -1,15 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 
 public class GravityWell : LevelElement
 {
 
-    float force;
+    [Serializable]
+    public class GravityWellData : LevelElementData {
+        public float force;
+    }
+
+    [SerializeField] protected new GravityWellData data;
 
     private void Start()
     {
-        if (force < 0) {
+        if (data.force < 0) {
             transform.Rotate(180,0,0);
         }
     }
@@ -17,7 +23,7 @@ public class GravityWell : LevelElement
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (!collision.CompareTag("Player")) return;
-        Player.instance.ShipBehaviour.transform.Translate(new Vector3(force * Time.deltaTime, 0,0));
+        Player.instance.ShipBehaviour.transform.Translate(new Vector3(data.force * Time.deltaTime, 0,0));
     }
 
 }

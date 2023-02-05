@@ -1,15 +1,26 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 // A class for obstacles that take up space of all screen and have some length
 // For example, nebulas, non-newtonic clouds, etc
-public class FieldObstacle : Obstacle
+[Serializable]
+public class FieldObstacleData : LevelElementData
 {
-    protected float length;
+    public float Length = 1f;
+}
 
-    protected void Start()
-    {
-        transform.localScale = new Vector3(transform.localScale.x, length, 1);
+public abstract class FieldObstacle : Obstacle
+{
+    private FieldObstacleData fieldObstacleData;
+
+    private void OnEnable() => UpdateData();
+
+    protected void Start() => UpdateData();
+
+    protected void UpdateData() {
+        if (data == null) data = fieldObstacleData;
+        transform.localScale = new Vector3(transform.localScale.x, ((FieldObstacleData) data).Length, 1);
     }
 
 }

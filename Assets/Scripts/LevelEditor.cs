@@ -66,7 +66,6 @@ public class LevelEditor : EditorWindow
         }
     }
 
-    [MenuItem("Window/Level Editor")]
     static void Init() { //Boilerplate
         LevelEditor window = (LevelEditor)GetWindow(typeof(LevelEditor));
         window.titleContent = new GUIContent(text: "Level Editor");
