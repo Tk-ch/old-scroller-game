@@ -12,7 +12,6 @@ public class NonNewtCloudData : FieldObstacleData
     public long Gear;
 }
 
-
 public class NonNewtCloud : FieldObstacle
 {
     
@@ -25,11 +24,23 @@ public class NonNewtCloud : FieldObstacle
         UpdateData();
     }
 
+    private void OnEnable()
+    {
+        OnInit += Init;
+    
+    }
+
+    private void Init()
+    {
+        nonNewtCloudData = (NonNewtCloudData) data;
+        UpdateData();
+    }
+
     private new void UpdateData()
     {
 
-        if (data == null) data = nonNewtCloudData;
-        base.UpdateData();
+        data = nonNewtCloudData;
+        base.UpdateData(data);
 
         NonNewtCloudData localData = (NonNewtCloudData)data; 
 

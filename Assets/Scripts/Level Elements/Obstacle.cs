@@ -1,3 +1,4 @@
+using GluonGui.WorkspaceWindow.Views.WorkspaceExplorer.Explorer;
 using UnityEngine;
 
 // A basic obstacle class yep
@@ -7,4 +8,5 @@ public class Obstacle : LevelElement
 {
     [SerializeField] protected long damage = 0;
     [SerializeField] protected long gearDamage = 0;
+    
 }

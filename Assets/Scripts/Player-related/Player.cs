@@ -5,6 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Component to handle them inputs and have links to other components
 /// </summary>
+[ExecuteInEditMode]
 public class Player : MonoBehaviour
 {
 

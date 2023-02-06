@@ -6,8 +6,8 @@ public class EndPortal : LevelElement
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player")) {
-            game.FinishGame();
-        } 
+
     }
+
+    
 }

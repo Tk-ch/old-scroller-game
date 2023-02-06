@@ -8,9 +8,9 @@ using UnityEngine;
 /// <summary>
 /// A base class for all the elements of the levels
 /// </summary>
-/// 
 public abstract class LevelElementData { }
 
+[ExecuteInEditMode]
 public abstract class LevelElement : MonoBehaviour
 {
 
@@ -20,6 +20,7 @@ public abstract class LevelElement : MonoBehaviour
     [SerializeField] protected Game game; // б≥льш≥сть елемент≥в р≥вню потребуватимуть гравц€
     [SerializeField] float destroyCoordinate = -10;
 
+    protected event Action OnInit;
     
     // Most level elements move downward with the speed of the player, so this method does this
     protected void FixedUpdate()
@@ -32,5 +33,7 @@ public abstract class LevelElement : MonoBehaviour
     
     public void Init(LevelElementData data) {
         this.data = data;
+        OnInit?.Invoke();
     }
+
 }

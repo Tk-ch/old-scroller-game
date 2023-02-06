@@ -13,6 +13,7 @@ public class FieldObstacleData : LevelElementData
 public abstract class FieldObstacle : Obstacle
 {
     private FieldObstacleData fieldObstacleData;
+     
 
     private void OnValidate() => UpdateData();
 
@@ -21,6 +22,11 @@ public abstract class FieldObstacle : Obstacle
     protected void UpdateData() {
         if (data == null && fieldObstacleData != null) data = fieldObstacleData; 
         transform.localScale = new Vector3(transform.localScale.x, ((FieldObstacleData) data).Length, 1);
+    }
+
+    protected void UpdateData(LevelElementData data) { 
+        transform.localScale = new Vector3(transform.localScale.x, ((FieldObstacleData) data).Length, 1);
+
     }
 
 }

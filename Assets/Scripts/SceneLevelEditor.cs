@@ -1,3 +1,4 @@
+using log4net.Core;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -48,21 +49,48 @@ public class SceneLevelEditor : EditorWindow
         if (GUILayout.Button("Save")) {
             SaveLevel();
         }
+        if (GUILayout.Button("Load")) {
+            LoadLevel();
+        }
+    }
+
+    private void LoadLevel() {
+        foreach (var prefab in parent.GetComponentsInChildren<LevelElement>())
+        {
+            DestroyImmediate(prefab.gameObject);
+        }
+
+        var levelString = (TextAsset)Resources.Load("Levels/" + levelName);
+        Level level;
+        if (levelString == null)
+        {
+            level = new Level();
+        }
+        else level = JsonConvert.DeserializeObject<Level>(levelString.text, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+        foreach (var el in level.Elements) {
+            GameObject prefab = PrefabUtility.InstantiatePrefab(Resources.Load("Prefabs/" + el.PrefabName, typeof(GameObject)), parent.transform) as GameObject;
+            float yOffset = (el.Data is FieldObstacleData) ? ((FieldObstacleData)el.Data).Length : 0;
+            prefab.transform.localPosition = new Vector3(el.X, el.Y + yOffset, 0);
+            prefab.GetComponent<LevelElement>().Init(el.Data);
+        }
     }
 
     private void SaveLevel()
     {
         Level level = new Level();
+
         foreach (var prefab in parent.GetComponentsInChildren<LevelElement>()) {
+            float yOffset = (prefab.Data is FieldObstacleData) ? ((FieldObstacleData)prefab.Data).Length : 0;
             LevelElementInfo tempElement = new LevelElementInfo {
                 Data = prefab.Data,
                 X = prefab.transform.localPosition.x,
-                Y = prefab.transform.localPosition.y,
-                PrefabName = prefab.gameObject.name
+                Y = prefab.transform.localPosition.y - yOffset,
+                PrefabName = PrefabUtility.GetCorrespondingObjectFromSource(prefab.gameObject).name
             };
             level.Elements.Add(tempElement);
             
         }
+        level.Elements.Sort();
         string levelString = JsonConvert.SerializeObject(level, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
         File.WriteAllText(Application.dataPath + "/Resources/Levels/" + levelName + ".json", levelString);
         AssetDatabase.Refresh();

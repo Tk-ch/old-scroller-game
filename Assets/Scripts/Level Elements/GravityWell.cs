@@ -21,8 +21,6 @@ public class GravityWell : LevelElement
         Init();
     }
 
-    
-
     private void Start()
     {
         Init();

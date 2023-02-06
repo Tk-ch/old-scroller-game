@@ -11,7 +11,8 @@ public class BoostOrHeal : ObjectObstacle
 
     private void Start()
     {
-        Player.instance.Ship.OnRollChanged += UpdateColor;
+        if (Player.instance != null)
+            Player.instance.Ship.OnRollChanged += UpdateColor;
     }
 
     private void UpdateColor(bool isRolling) {
@@ -41,6 +42,7 @@ public class BoostOrHeal : ObjectObstacle
 
     private void OnDestroy()
     {
-        Player.instance.Ship.OnRollChanged -= UpdateColor;
+        if (Player.instance != null)
+            Player.instance.Ship.OnRollChanged -= UpdateColor;
     }
 }

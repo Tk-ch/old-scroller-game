@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Nebuloic
 {
-    [ExecuteInEditMode]
     public class UIHandler : MonoBehaviour
     {
 
@@ -21,7 +20,6 @@ namespace Nebuloic
             instance = this;
         }
 
-#if !(UNITY_EDITOR)
         private void Update()
         {
             var velocity = Stars.velocityOverLifetime;
@@ -36,6 +34,6 @@ namespace Nebuloic
 
             if (Player.instance.Ship.IsRolling) emission.rateOverTimeMultiplier *= 3;
         }
-#endif
+
     }
 }
