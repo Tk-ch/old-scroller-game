@@ -14,7 +14,11 @@ public class GravityWell : LevelElement
 {
 
     [SerializeField] protected GravityWellData gravityWellData;
+    private void OnEnable()
+    {
+        OnInit += Init;
 
+    }
     private void OnValidate()
     {
         data = gravityWellData;
@@ -28,6 +32,7 @@ public class GravityWell : LevelElement
 
     private void Init()
     {
+        gravityWellData = (GravityWellData)data;
         if (((GravityWellData)data).force < 0)
         {
             GetComponent<SpriteRenderer>().flipY = false;

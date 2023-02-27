@@ -1,8 +1,4 @@
-using log4net.Core;
 using Newtonsoft.Json;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -29,7 +25,7 @@ public class SceneLevelEditor : EditorWindow
 
     private void OnSelectionChange()
     {
-
+        if (SceneManager.GetActiveScene().name != "LevelEditor") return;
         foreach (var prefab in Selection.gameObjects) {
             if (prefab.transform.IsChildOf(parent.transform)) continue;
             if (prefab.gameObject.scene.name == null || prefab.gameObject.scene.name == prefab.gameObject.name) continue;
@@ -46,12 +42,17 @@ public class SceneLevelEditor : EditorWindow
         EditorGUILayout.PropertyField(levelElementParentProperty, expandDefault);
         EditorGUILayout.PropertyField(levelNameProperty, expandDefault);
         so.ApplyModifiedProperties();
+        if (SceneManager.GetActiveScene().name != "LevelEditor") return;
         if (GUILayout.Button("Save")) {
             SaveLevel();
         }
         if (GUILayout.Button("Load")) {
             LoadLevel();
         }
+    }
+
+    private string GetPrefabPath(GameObject prefab) {
+        return AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(prefab)).Replace(".prefab", "").Replace("Assets/Resources/Prefabs/", "");
     }
 
     private void LoadLevel() {
@@ -69,7 +70,7 @@ public class SceneLevelEditor : EditorWindow
         else level = JsonConvert.DeserializeObject<Level>(levelString.text, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
         foreach (var el in level.Elements) {
             GameObject prefab = PrefabUtility.InstantiatePrefab(Resources.Load("Prefabs/" + el.PrefabName, typeof(GameObject)), parent.transform) as GameObject;
-            float yOffset = (el.Data is FieldObstacleData) ? ((FieldObstacleData)el.Data).Length : 0;
+            float yOffset = (el.Data is FieldObstacleData) ? ((FieldObstacleData)el.Data).Length : prefab.GetComponent<Renderer>().bounds.extents.x; // the objects are rotated 90 degrees so it's x coordinate here and not y
             prefab.transform.localPosition = new Vector3(el.X, el.Y + yOffset, 0);
             prefab.GetComponent<LevelElement>().Init(el.Data);
         }
@@ -80,13 +81,14 @@ public class SceneLevelEditor : EditorWindow
         Level level = new Level();
 
         foreach (var prefab in parent.GetComponentsInChildren<LevelElement>()) {
-            float yOffset = (prefab.Data is FieldObstacleData) ? ((FieldObstacleData)prefab.Data).Length : 0;
+            float yOffset = (prefab.Data is FieldObstacleData) ? ((FieldObstacleData)prefab.Data).Length : prefab.GetComponent<Renderer>().bounds.extents.x;
             LevelElementInfo tempElement = new LevelElementInfo {
                 Data = prefab.Data,
                 X = prefab.transform.localPosition.x,
                 Y = prefab.transform.localPosition.y - yOffset,
-                PrefabName = PrefabUtility.GetCorrespondingObjectFromSource(prefab.gameObject).name
+                PrefabName = GetPrefabPath(prefab.gameObject)
             };
+
             level.Elements.Add(tempElement);
             
         }

@@ -11,7 +11,7 @@ namespace Nebuloic
     /// The main game class, attached to the camera
     /// Is used to connect player with the other classes, and also instantiates level prefabs
     /// </summary>
-    public class Game : MonoBehaviour
+    public class LevelManager : MonoBehaviour
     {
         // Player field 
         // The background of the scene
@@ -20,8 +20,6 @@ namespace Nebuloic
         // Filename of the level to load
         [SerializeField] string levelName;
 
-        // Transform that is used when instantiating prefabs
-        [SerializeField] Transform obstacleParent;
 
         [SerializeField] float endCoord;
 
@@ -30,8 +28,13 @@ namespace Nebuloic
 
         float gameTimeInSeconds = 0;
 
+        private bool isPaused = false;
+        public bool IsPaused => isPaused;
+
         // Loaded level
         Level level;
+
+        public static LevelManager instance;
 
 
         /// <summary>
@@ -40,10 +43,17 @@ namespace Nebuloic
         /// <param name="el">The element to instantiate</param>
         void InstantiateElement(LevelElementInfo el)
         {
-            GameObject prefab = Instantiate(Resources.Load("Prefabs/" + el.PrefabName, typeof(GameObject)), obstacleParent, true) as GameObject;
-            float yOffset = (el.Data is FieldObstacleData) ? ((FieldObstacleData) el.Data).Length : 0;  
-            prefab.transform.position = new Vector3(el.X, obstacleParent.position.y + yOffset, obstacleParent.position.z);
+            GameObject prefab = Instantiate(Resources.Load("Prefabs/" + el.PrefabName, typeof(GameObject)), transform, true) as GameObject;
+            float yOffset = (el.Data is FieldObstacleData) ? ((FieldObstacleData) el.Data).Length : prefab.GetComponent<Renderer>().bounds.extents.y;
+
+            prefab.transform.position = new Vector3(el.X, transform.position.y + yOffset, transform.position.z);
             prefab.GetComponent<LevelElement>().Init(el.Data);
+        }
+
+
+        private void Awake()
+        {
+            instance = this;
         }
 
         // Is run before first frame of the Scene
@@ -61,9 +71,14 @@ namespace Nebuloic
         /// <summary>
         /// Updates the current position on the level and instantiates elements if needed
         /// </summary>
+
+        public void InvertPause() {
+            isPaused = !isPaused;
+        }
+
         private void FixedUpdate()
         {
-
+            if (isPaused) return;
             levelPosition += Player.instance.Ship.Engine.CurrentSpeed * Time.fixedDeltaTime;
 
             // Instantiates every element that is "before" a given position

@@ -48,14 +48,15 @@ namespace Nebuloic
             resetWarning = StartCoroutine(Utility.ExecuteAfterTime(ResetWarning, durationInSeconds));
         }
 
-        void ResetWarning()
+        public void ResetWarning()
         {
-            warningPanel.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+            warningPanel.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 0f);
         }
 
         private void Start()
         {
             CreateGears();
+            ResetWarning();
         }
 
         /// <summary>

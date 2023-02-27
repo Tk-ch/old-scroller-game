@@ -1,3 +1,4 @@
+using Nebuloic;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,7 @@ public class ObjectObstacle : Obstacle
 
     private new void FixedUpdate()
     {
+        if (LevelManager.instance.IsPaused) return;
         transform.Rotate(new Vector3(0,0,rotationSpeed * Time.fixedDeltaTime));
         transform.Translate(new Vector3(0, relativeSpeed * Time.fixedDeltaTime, 0), Space.World);
         base.FixedUpdate();

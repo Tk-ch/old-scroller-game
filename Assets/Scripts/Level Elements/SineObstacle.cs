@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nebuloic;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -17,6 +18,7 @@ public class SineObstacle : ObjectObstacle
 
     private new void FixedUpdate()
     {
+        if (LevelManager.instance.IsPaused) return;
         transform.position = new Vector3(Mathf.Sin(game.levelPosition / 5) * data.horizontalSpeed, transform.position.y);
 
         base.FixedUpdate();
